@@ -1,8 +1,14 @@
 import React from "react";
-import "./App.css";
+import MapComponent from "./components/Map";
+import MainContainer from "./pages/home";
 
 function App() {
-    return <div className="App">creat-react-app</div>;
+    return (
+        <div className="App">
+            <MapComponent></MapComponent>
+            <MainContainer></MainContainer>
+        </div>
+    );
 }
 
 export default App;

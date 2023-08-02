@@ -9,3 +9,9 @@ body {
 code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
+
+.App {
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+}

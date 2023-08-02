@@ -1,0 +1,33 @@
+.verification-btn-box {
+    position: absolute;
+    top: 77px;
+    left: 50px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+.verification-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 32px;
+    border-radius: 16px;
+    background: #d39422;
+    margin-right: 10px;
+    cursor: pointer;
+}
+.verification-btn .icon-airport {
+    width: 29px;
+    height: 32px;
+}
+.verification-btn .icon-area {
+    width: 26px;
+    height: 26px;
+}
+.active {
+    background: #d39422;
+}
+.inactive {
+    background: rgba(1, 21, 55, 0.6);
+}
