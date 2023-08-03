@@ -1,0 +1,27 @@
+.verification-setting {
+    position: absolute;
+    top: 77px;
+    right: 40px;
+}
+.setting-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 32px;
+    cursor: pointer;
+    border-radius: 16px;
+    background: rgba(1, 21, 55, 0.6);
+    margin-bottom: 10px;
+}
+.active {
+    background: #0096ff;
+}
+.icon-airport-verification-setting {
+    width: 26px;
+    height: 26px;
+}
+.icon-airport-setting {
+    width: 20.8px;
+    height: 24px;
+}

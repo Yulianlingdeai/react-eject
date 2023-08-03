@@ -7,11 +7,12 @@
 }
 .airport-operater {
     width: 40px;
-    padding: 18px 0;
+    padding: 8px 0;
     border-radius: 20px;
     background: rgba(1, 21, 55, 0.6);
 }
 .airport-btn {
+    position: relative;
     width: 40px;
     height: 32px;
     margin: 10px 0;
@@ -21,9 +22,17 @@
     justify-content: center;
     align-items: center;
 }
-.airport-btn img {
-    width: 22px;
+/* .airport-btn img {
     height: 32px;
+    object-fit: cover;
+} */
+.airport-btn .num {
+    position: absolute;
+    top: 46%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    font-size: 12px;
+    font-weight: 500;
 }
 .airport-btn-active {
     background: #d39422;
@@ -31,7 +40,7 @@
 
 .airport-btn-desc {
     width: 40px;
-    padding: 18px 0;
+    padding: 8px 0;
     margin-left: 10px;
 }
 .airport-desc-item {
@@ -42,7 +51,7 @@
     /* justify-content: center; */
     align-items: center;
     line-height: 39px;
-    /* text-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.3); */
+    text-shadow: 0px 0px 4px rgba(0, 0, 0, 0.3);
 }
 .airport-desc-item span {
     color: #ffffff;
