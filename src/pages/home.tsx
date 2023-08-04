@@ -10,6 +10,7 @@ import ColorCard from "../components/ColorCard";
 import ModelSelect from "../components/ModelSelect";
 import TimeIntervalSelect from "../components/TimeIntervalSelect";
 import TimeSelect from "../components/TimeSelect";
+import TimeAxis from "../components/TimeAxis";
 
 export default function MainContainer() {
     const [type, setType] = useState(1);
@@ -19,10 +20,7 @@ export default function MainContainer() {
     return (
         <>
             <Header></Header>
-            <VerificationBtnList
-                type={type}
-                handleChangeType={handleChangeType}
-            ></VerificationBtnList>
+            <VerificationBtnList type={type} handleChangeType={handleChangeType}></VerificationBtnList>
             {type === 1 && <AirportVerificationSituation></AirportVerificationSituation>}
             {type === 1 && <VerificationMethods></VerificationMethods>}
             <SearchInput></SearchInput>
@@ -32,6 +30,7 @@ export default function MainContainer() {
             <ModelSelect></ModelSelect>
             <TimeSelect></TimeSelect>
             <TimeIntervalSelect></TimeIntervalSelect>
+            <TimeAxis></TimeAxis>
         </>
     );
 }

@@ -24,8 +24,7 @@ export default function ColorCard() {
                             className="color-item"
                             style={{
                                 background: item.color,
-                                borderBottom:
-                                    index === colorList.length - 1 ? "none" : "1px solid #ffffff"
+                                borderBottom: index === colorList.length - 1 ? "none" : "1px solid #ffffff"
                             }}
                             key={item.id}
                         ></div>

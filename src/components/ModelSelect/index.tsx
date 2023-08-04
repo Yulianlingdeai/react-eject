@@ -6,24 +6,19 @@ export default function ModelSelect() {
     const [isShowModelSelect, setIsShowModelSelect] = useState(false);
     const [model, setModel] = useState("EC");
     const modelList = ["EC", "TIANJI"];
-    const handleSelectModel = (modelName: string) => {
+    const handleSelectModel = (e: React.MouseEvent<HTMLLIElement, MouseEvent>, modelName: string) => {
+        e.stopPropagation();
         setModel(modelName);
         setIsShowModelSelect(false);
     };
     return (
-        <div className="model-select">
-            <div className="model-label" onClick={() => setIsShowModelSelect(true)}>
-                {model}
-            </div>
+        <div className="model-select" onClick={() => setIsShowModelSelect((isShowModelSelect) => !isShowModelSelect)}>
+            <div className="model-label">{model}</div>
             <img className="arrow" src={icon_arrow_down} alt="" />
             {isShowModelSelect && (
                 <ul className="select-options">
                     {modelList.map((item) => (
-                        <li
-                            className="option-item"
-                            key={item}
-                            onClick={() => handleSelectModel(item)}
-                        >
+                        <li className="option-item" key={item} onClick={(e) => handleSelectModel(e, item)}>
                             {item}
                         </li>
                     ))}

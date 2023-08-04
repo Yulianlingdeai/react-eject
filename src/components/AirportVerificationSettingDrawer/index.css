@@ -1,0 +1,84 @@
+.verification-elements {
+    margin-top: 10px;
+}
+.elements-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 21px;
+}
+.elements-header-title {
+    font-family: YouSheBiaoTiHei;
+    font-size: 18px;
+    font-weight: bold;
+    font-style: italic;
+    color: rgba(0, 0, 0, 0.6);
+    margin-right: 8px;
+}
+.split-line {
+    flex: 1;
+    position: relative;
+    top: 3px;
+    width: 100%;
+    height: 1px;
+    background: #d8d8d8;
+}
+.elements-btn {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    /* padding-left: 17px; */
+    padding: 10px 5px 10px 17px;
+    user-select: none;
+}
+.elements-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    min-width: 120px;
+    padding: 0 14px;
+    height: 36px;
+    margin: 5px;
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.6);
+    /* margin-top: 10px;
+    margin-right: 10px; */
+    border-radius: 18px;
+    cursor: pointer;
+    /* background: #0096ff; */
+    background: rgba(0, 0, 0, 0.08);
+}
+.elements-item-active {
+    color: #ffffff;
+    background: #0096ff;
+}
+.pl5 {
+    padding-left: 25px;
+}
+.custom-checkbox-group {
+    padding: 5px 0;
+}
+.custom-checkbox-group .ant-checkbox-inner {
+    width: 22px;
+    height: 22px;
+}
+.custom-checkbox-group .ant-checkbox-inner::after {
+    width: 7px;
+    height: 13px;
+}
+.custom-checkbox-group span {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 22px;
+    vertical-align: bottom;
+    color: #3d3d3d;
+}
+.timeinterval-item {
+    min-width: 80px;
+}
+/* drawer-content */
+.drawer-container .ant-drawer-content-wrapper {
+    top: 58px;
+}

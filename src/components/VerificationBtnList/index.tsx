@@ -7,14 +7,14 @@ export default function VerificationBtnList({ type, handleChangeType }: props) {
     return (
         <div className="verification-btn-box">
             <div
-                className={`verification-btn ${type === 1 ? "active" : "inactive"}`}
+                className={`verification-btn ${type === 1 ? "veri-active" : "inactive"}`}
                 title="机场检验"
                 onClick={() => handleChangeType(1)}
             >
                 <img className="icon-airport" src={icon_airport} alt="" />
             </div>
             <div
-                className={`verification-btn ${type === 2 ? "active" : "inactive"}`}
+                className={`verification-btn ${type === 2 ? "veri-active" : "inactive"}`}
                 title="区域检验"
                 onClick={() => handleChangeType(2)}
             >

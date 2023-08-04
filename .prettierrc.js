@@ -1,5 +1,5 @@
 module.exports = {
-    printWidth: 100, // 每行代码的最大长度
+    printWidth: 120, // 每行代码的最大长度
     tabWidth: 4, // 缩进的空格数
     useTabs: false, // 是否使用制表符进行缩进
     semi: true, // 是否在语句末尾添加分号
@@ -14,5 +14,5 @@ module.exports = {
     rangeEnd: Infinity, // 只格式化文件的一部分（到指定的行结束）
     proseWrap: "preserve", // 控制 Markdown 文件换行方式
     htmlWhitespaceSensitivity: "css", // 控制 HTML 文件中空白符的敏感度
-    endOfLine: "auto", // 控制换行符的样式
+    endOfLine: "auto" // 控制换行符的样式
 };

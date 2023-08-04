@@ -8,9 +8,7 @@ export default function VerificationMethods() {
         <div className="verification-methods">
             {methodsList.map((item) => (
                 <div
-                    className={`methods-item ${
-                        currentMethod === item.label ? "methods-item-active" : ""
-                    }`}
+                    className={`methods-item ${currentMethod === item.label ? "methods-item-active" : ""}`}
                     key={item.label}
                     onClick={() => setCurrentMethod(item.label)}
                 >
