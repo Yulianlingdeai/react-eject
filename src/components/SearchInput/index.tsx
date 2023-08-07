@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent } from "react";
-import "./index.css";
+import style from "./index.module.css";
 import icon_air from "../../assets/image/icon_air.png";
 import icon_search from "../../assets/image/icon_search.png";
 
@@ -25,8 +25,8 @@ export default function SearchInput() {
         setShowDropdown(false); // 隐藏下拉框，当选择选项时
     };
     return (
-        <div className="search-container">
-            <div className="search-logo">
+        <div className={style.container}>
+            <div className={style.logo}>
                 <img src={icon_air} alt="" />
             </div>
             <input
@@ -38,7 +38,7 @@ export default function SearchInput() {
                 placeholder="机场定位(模糊检索)"
             />
             {showDropdown && (
-                <ul className="option-container">
+                <ul className={style.optionContainer}>
                     {options
                         .filter((option) => option.toLowerCase().includes(inputValue.toLowerCase()))
                         .map((option, index) => (
@@ -52,7 +52,7 @@ export default function SearchInput() {
                         ))}
                 </ul>
             )}
-            <img className="search-icon" src={icon_search} alt="" />
+            <img className={style.icon} src={icon_search} alt="" />
         </div>
     );
 }

@@ -1,5 +1,5 @@
 import React from "react";
-import "./index.css";
+import style from "./index.module.css";
 
 export default function ColorCard() {
     const colorList = [
@@ -12,29 +12,29 @@ export default function ColorCard() {
         { id: 7, color: "#56DCD6", value: 0.5 }
     ];
     return (
-        <div className="color-card">
-            <div className="color-title">
-                <div className="color-text">AE</div>
-                <div className="color-unit">°C</div>
+        <div className={style.card}>
+            <div className={style.title}>
+                <div className={style.text}>AE</div>
+                <div className={style.unit}>°C</div>
             </div>
-            <div className="color-container">
-                <ul className="color-box">
+            <div className={style.container}>
+                <ul className={style.colorBox}>
                     {colorList.map((item, index) => (
-                        <div
-                            className="color-item"
+                        <li
+                            className={style.colorItem}
                             style={{
                                 background: item.color,
                                 borderBottom: index === colorList.length - 1 ? "none" : "1px solid #ffffff"
                             }}
                             key={item.id}
-                        ></div>
+                        ></li>
                     ))}
                 </ul>
                 <ul className="color-text-box">
                     {colorList.map((item) => (
-                        <div className="color-text-item" key={item.id}>
+                        <li className={style.textItem} key={item.id}>
                             {item.value.toFixed(1)}
-                        </div>
+                        </li>
                     ))}
                 </ul>
             </div>

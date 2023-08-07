@@ -1,13 +1,12 @@
 import React from "react";
-import "./index.css";
+import style from "./index.module.css";
 import icon_close from "../../assets/image/icon_close.png";
 
-export default function customCloseIcon() {
+type props = { className?: string };
+export default function CustomCloseIcon({ className }: props) {
     return (
-        <div className="close-icon-container">
-            <div className="close-icon">
-                <img src={icon_close} alt="" />
-            </div>
+        <div className={`${style.container} ${className}`}>
+            <img src={icon_close} alt="" />
         </div>
     );
 }

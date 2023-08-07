@@ -184,7 +184,7 @@ td {
     font-size: 100%;
     font-weight: 400;
     font-style: normal;
-    line-height: 1.25;
+    /* line-height: 1.25; */
 }
 
 b,

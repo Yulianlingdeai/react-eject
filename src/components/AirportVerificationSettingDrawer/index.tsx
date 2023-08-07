@@ -4,7 +4,7 @@ import { Drawer, Checkbox } from "antd";
 import type { CheckboxValueType } from "antd/es/checkbox/Group";
 const CheckboxGroup = Checkbox.Group;
 import CustomCloseIcon from "../CustomCloseIcon";
-import "./index.css";
+import style from "./index.module.css";
 import icon_2mtem from "../../assets/image/icon_2m_tem.png";
 import icon_10m_wind_direction from "../../assets/image/icon_10m_wind_direction.png";
 import icon_10m_wend_speed from "../../assets/image/icon_10m_wend_speed.png";
@@ -16,10 +16,10 @@ import icon_low_clouds_high from "../../assets/image/icon_low_clouds_high.png";
 type SettingItemProps = { children: ReactNode; title: string };
 const SettingItem = function ({ children, title }: SettingItemProps) {
     return (
-        <div className="verification-elements">
-            <div className="elements-header">
-                <div className="elements-header-title">{title}</div>
-                <div className="split-line"></div>
+        <div className={style.verificationElements}>
+            <div className={style.elementsHeader}>
+                <div className={style.elementsHeaderTitle}>{title}</div>
+                <div className={style.splitLine}></div>
             </div>
             {children}
         </div>
@@ -113,16 +113,13 @@ export default function AirportVerificationSettingDrawer({ open, onClose }: prop
                 open={open}
                 closeIcon={<CustomCloseIcon></CustomCloseIcon>}
             >
-                {/* <div className="verification-elements">
-                    <div className="elements-header">
-                        <div className="elements-header-title">检验要素</div>
-                        <div className="split-line"></div>
-                    </div> */}
                 <SettingItem title="检验要素">
-                    <div className="elements-btn">
+                    <div className={style.elementsBtn}>
                         {elementsBtnList.map((item) => (
                             <div
-                                className={`elements-item ${item.id === elementSelectId ? "elements-item-active" : ""}`}
+                                className={`${style.elementsItem} ${
+                                    item.id === elementSelectId ? style.elementsItemActive : ""
+                                }`}
                                 onClick={() => handleSelectElements(item)}
                                 key={item.id}
                             >
@@ -132,9 +129,8 @@ export default function AirportVerificationSettingDrawer({ open, onClose }: prop
                         ))}
                     </div>
                 </SettingItem>
-                {/* </div> */}
                 <SettingItem title="检验模式">
-                    <div className="elements-btn pl5">
+                    <div className={`${style.elementsBtn} ${style.pl5}`}>
                         <CheckboxGroup
                             className="custom-checkbox-group"
                             options={plainOptions}
@@ -144,7 +140,7 @@ export default function AirportVerificationSettingDrawer({ open, onClose }: prop
                     </div>
                 </SettingItem>
                 <SettingItem title="检验起报时次">
-                    <div className="elements-btn pl5">
+                    <div className={`${style.elementsBtn} ${style.pl5}`}>
                         <CheckboxGroup
                             className="custom-checkbox-group"
                             options={startTimeOptions}
@@ -154,11 +150,11 @@ export default function AirportVerificationSettingDrawer({ open, onClose }: prop
                     </div>
                 </SettingItem>
                 <SettingItem title="检验时间间隔">
-                    <div className="elements-btn">
+                    <div className={style.elementsBtn}>
                         {timeIntervalList.map((item) => (
                             <div
-                                className={`elements-item timeinterval-item ${
-                                    item.id === timeIntervalSelectId ? "elements-item-active" : ""
+                                className={`${style.elementsItem} ${style.timeintervalItem} ${
+                                    item.id === timeIntervalSelectId ? style.elementsItemActive : ""
                                 }`}
                                 onClick={() => handleSelectTimeInterval(item)}
                                 key={item.id}
@@ -169,11 +165,11 @@ export default function AirportVerificationSettingDrawer({ open, onClose }: prop
                     </div>
                 </SettingItem>
                 <SettingItem title="检验预报时效">
-                    <div className="elements-btn">
+                    <div className={style.elementsBtn}>
                         {forecastTimeList.map((item) => (
                             <div
-                                className={`elements-item timeinterval-item ${
-                                    item.id === forecastTime ? "elements-item-active" : ""
+                                className={`${style.elementsItem} ${style.timeintervalItem} ${
+                                    item.id === forecastTime ? style.elementsItemActive : ""
                                 }`}
                                 onClick={() => handleChangeForecastTime(item)}
                                 key={item.id}
@@ -184,10 +180,12 @@ export default function AirportVerificationSettingDrawer({ open, onClose }: prop
                     </div>
                 </SettingItem>
                 <SettingItem title="检验时长">
-                    <div className="elements-btn">
+                    <div className={style.elementsBtn}>
                         {durationList.map((item) => (
                             <div
-                                className={`elements-item ${item.id === duration ? "elements-item-active" : ""}`}
+                                className={`${style.elementsItem} ${
+                                    item.id === duration ? style.elementsItemActive : ""
+                                }`}
                                 onClick={() => handleChangeDuration(item)}
                                 key={item.id}
                             >
@@ -197,10 +195,12 @@ export default function AirportVerificationSettingDrawer({ open, onClose }: prop
                     </div>
                 </SettingItem>
                 <SettingItem title="检验数值">
-                    <div className="elements-btn">
+                    <div className={style.elementsBtn}>
                         {methodsList.map((item) => (
                             <div
-                                className={`elements-item ${item.id === method ? "elements-item-active" : ""}`}
+                                className={`${style.elementsItem} ${
+                                    item.id === method ? style.elementsItemActive : ""
+                                }`}
                                 onClick={() => handleChangeMethod(item)}
                                 key={item.id}
                             >

@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import "./index.css";
+import style from "./index.module.css";
 
 export default function VerificationMethods() {
     const [currentMethod, setCurrentMethod] = useState("ME");
     const methodsList = [{ label: "ME" }, { label: "MAE" }, { label: "PMSE" }, { label: "PC" }];
     return (
-        <div className="verification-methods">
+        <div className={style.methods}>
             {methodsList.map((item) => (
                 <div
-                    className={`methods-item ${currentMethod === item.label ? "methods-item-active" : ""}`}
+                    className={`${style.methodsItem} ${currentMethod === item.label ? style.active : ""}`}
                     key={item.label}
                     onClick={() => setCurrentMethod(item.label)}
                 >

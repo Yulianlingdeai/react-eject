@@ -1,4 +1,4 @@
-.time-select {
+.select {
     position: absolute;
     left: 147px;
     bottom: 31px;
@@ -13,7 +13,7 @@
     cursor: pointer;
     background: rgba(1, 21, 55, 0.6);
 }
-.time-select img {
+.select img {
     width: 16px;
     height: 16px;
 }

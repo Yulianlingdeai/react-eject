@@ -1,9 +1,9 @@
-.map-setting {
+.setting {
     position: absolute;
     top: 185px;
     right: 40px;
 }
-.map-setting-item {
+.settingItem {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -14,11 +14,15 @@
     cursor: pointer;
     background: rgba(1, 21, 55, 0.6);
 }
-.map-setting-item img {
+.normal {
     width: 26px;
     height: 26px;
 }
-.map-setting-item .icon-scale-small {
+.settingItem .big {
+    width: 26px;
+    height: 26px;
+}
+.settingItem .small {
     width: 26px;
     height: 11px;
 }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./index.css";
+import style from "./index.module.css";
 import AirportVerificationSettingDrawer from "../AirportVerificationSettingDrawer";
 import AirportSetting from "../AirportSetting";
 import icon_airport_setting from "../../assets/image/icon_airport_setting.png";
@@ -22,18 +22,22 @@ export default function VerificationSetting() {
     };
     return (
         <>
-            <div className="verification-setting">
+            <div className={style.verificationSetting}>
                 <div
-                    className={`setting-item ${isShowAirportVeriSetting ? "active" : ""}`}
+                    className={`${style.settingItem} ${isShowAirportVeriSetting ? style.active : ""}`}
                     onClick={handleShowAirportVeriSetting}
                 >
-                    <img className="icon-airport-verification-setting" src={icon_airport_verification_setting} alt="" />
+                    <img
+                        className={style.iconAirportVerificationSetting}
+                        src={icon_airport_verification_setting}
+                        alt=""
+                    />
                 </div>
                 <div
-                    className={`setting-item ${isShowAirportSetting ? "active" : ""}`}
+                    className={`${style.settingItem} ${isShowAirportSetting ? style.active : ""}`}
                     onClick={handleShowAirportSetting}
                 >
-                    <img className="icon-airport-setting" src={icon_airport_setting} alt="" />
+                    <img className={style.iconAirportSetting} src={icon_airport_setting} alt="" />
                 </div>
             </div>
             <AirportVerificationSettingDrawer

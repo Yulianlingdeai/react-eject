@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./index.css";
+import style from "./index.module.css";
 import icon_arrow_down from "../../assets/image/icon_arrow_down.png";
 
 export default function ModelSelect() {
@@ -12,13 +12,13 @@ export default function ModelSelect() {
         setIsShowModelSelect(false);
     };
     return (
-        <div className="model-select" onClick={() => setIsShowModelSelect((isShowModelSelect) => !isShowModelSelect)}>
-            <div className="model-label">{model}</div>
-            <img className="arrow" src={icon_arrow_down} alt="" />
+        <div className={style.select} onClick={() => setIsShowModelSelect((isShowModelSelect) => !isShowModelSelect)}>
+            <div className={style.label}>{model}</div>
+            <img className={style.arrow} src={icon_arrow_down} alt="" />
             {isShowModelSelect && (
-                <ul className="select-options">
+                <ul className={style.options}>
                     {modelList.map((item) => (
-                        <li className="option-item" key={item} onClick={(e) => handleSelectModel(e, item)}>
+                        <li className={style.optionsItem} key={item} onClick={(e) => handleSelectModel(e, item)}>
                             {item}
                         </li>
                     ))}

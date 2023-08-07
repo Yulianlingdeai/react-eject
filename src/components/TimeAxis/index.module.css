@@ -1,4 +1,4 @@
-.time-axis {
+.axis {
     position: absolute;
     left: 480px;
     bottom: 30px;
@@ -6,7 +6,7 @@
     justify-content: flex-start;
     align-items: center;
 }
-.time-operate-btn {
+.btn {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,7 +17,7 @@
     background: rgba(1, 21, 55, 0.6);
     margin-right: 10px;
 }
-.time-operate-btn img {
+.btn img {
     width: 17.25px;
     height: 19px;
     user-select: none;
@@ -25,26 +25,26 @@
 .active {
     background: linear-gradient(90deg, #33e9e8 0%, #6089f9 100%);
 }
-.time-operate-btn .play-pause {
+.btn .play-pause {
     position: relative;
     left: 2px;
     width: 13px;
     height: 19px;
 }
-.time-line-container {
+.lineContainer {
     position: relative;
     height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-.time-line {
+.line {
     width: 630px;
     height: 6px;
     border-radius: 4px;
     background: rgba(0, 0, 0, 0.6);
 }
-.time-blueline {
+.blueline {
     position: absolute;
     top: 17px;
     left: 0;
@@ -53,7 +53,7 @@
     border-radius: 4px;
     background: #0096ff;
 }
-.time-tick-container {
+.tickContainer {
     position: absolute;
     top: 17px;
     left: 0;
@@ -63,20 +63,20 @@
     justify-content: space-evenly;
     align-items: center;
 }
-.tick-big {
+.big {
     position: relative;
     top: 2px;
     width: 4px;
     height: 11px;
     background: #ffffff;
 }
-.tick-small {
+.small {
     position: relative;
     width: 1px;
     height: 11px;
     background: #ffffff;
 }
-.tick-time {
+.time {
     position: absolute;
     top: 14px;
     left: 2px;
@@ -87,7 +87,7 @@
     -webkit-text-stroke: 1px rgba(0, 0, 0, 1);
     text-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
 }
-.tick-day {
+.day {
     position: absolute;
     top: 30px;
     left: 4px;

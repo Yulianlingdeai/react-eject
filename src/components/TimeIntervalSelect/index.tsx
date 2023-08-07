@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import "../ModelSelect/index.css";
-import "./index.css";
+import style from "../ModelSelect/index.module.css";
+import style2 from "./index.module.css";
 import icon_arrow_down from "../../assets/image/icon_arrow_down.png";
 
 export default function TimeIntervalSelect() {
@@ -14,15 +14,15 @@ export default function TimeIntervalSelect() {
     };
     return (
         <div
-            className="model-select time-interval-select"
+            className={`${style.select} ${style2.select}`}
             onClick={() => setIsShowModelSelect((isShowModelSelect) => !isShowModelSelect)}
         >
-            <div className="model-label">{model}</div>
-            <img className="arrow" src={icon_arrow_down} alt="" />
+            <div className={style.label}>{model}</div>
+            <img className={style.arrow} src={icon_arrow_down} alt="" />
             {isShowModelSelect && (
-                <ul className="select-options">
+                <ul className={style.options}>
                     {modelList.map((item) => (
-                        <li className="option-item" key={item} onClick={(e) => handleSelectModel(e, item)}>
+                        <li className={style.optionsItem} key={item} onClick={(e) => handleSelectModel(e, item)}>
                             {item}
                         </li>
                     ))}

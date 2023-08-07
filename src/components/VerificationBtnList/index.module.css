@@ -1,4 +1,4 @@
-.verification-btn-box {
+.container {
     position: absolute;
     top: 77px;
     left: 50px;
@@ -6,7 +6,7 @@
     justify-content: flex-start;
     align-items: center;
 }
-.verification-btn {
+.btn {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,15 +17,15 @@
     margin-right: 10px;
     cursor: pointer;
 }
-.verification-btn .icon-airport {
+.btn .airport {
     width: 29px;
     height: 32px;
 }
-.verification-btn .icon-area {
+.btn .area {
     width: 26px;
     height: 26px;
 }
-.veri-active {
+.active {
     background: #d39422;
 }
 .inactive {

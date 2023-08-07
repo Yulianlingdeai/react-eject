@@ -18,3 +18,53 @@ li {
     width: 100%;
     box-sizing: border-box;
 }
+
+.custom-checkbox-group {
+    /* padding: 5px 0; */
+}
+.custom-checkbox-group .ant-checkbox-inner {
+    width: 22px;
+    height: 22px;
+}
+.custom-checkbox-group .ant-checkbox-inner::after {
+    width: 7px;
+    height: 13px;
+}
+.custom-checkbox-group span {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 22px;
+    vertical-align: bottom;
+    color: #3d3d3d;
+}
+/* drawer-content */
+.drawer-container .ant-drawer-content-wrapper {
+    top: 58px;
+}
+
+.ant-table-wrapper .ant-table-container table > thead > tr:first-child > *:first-child {
+    border-radius: 0px;
+}
+.ant-table-wrapper .ant-table-container table > thead > tr:first-child > *:last-child {
+    border-radius: 0px;
+}
+/* 修改表头单元格的边框样式 */
+.ant-table-wrapper .ant-table-thead > tr > th {
+    /* border: 1px solid black; */
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    border: none;
+    background: #1c7bbe;
+}
+.ant-table-thead th::before {
+    width: 0 !important;
+}
+
+.ant-modal .ant-modal-content {
+    padding: 0;
+}
+
+.ant-checkbox-group-item {
+    padding: 4px 0 !important;
+}

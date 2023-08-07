@@ -1,10 +1,10 @@
-.search-container {
+.container {
     position: absolute;
     top: 77px;
     left: 50%;
     transform: translateX(-50%);
 }
-.search-container input {
+.container input {
     border: none;
     outline: none;
     width: 218px;
@@ -15,7 +15,7 @@
     background: #ffffff;
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
 }
-.search-logo {
+.logo {
     position: absolute;
     top: -4px;
     left: -9px;
@@ -28,11 +28,11 @@
     background: #414141;
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.5);
 }
-.search-logo img {
+.logo img {
     width: 32px;
     height: 32px;
 }
-.search-icon {
+.icon {
     position: absolute;
     top: 9px;
     right: 7px;
@@ -40,7 +40,7 @@
     height: 16px;
 }
 
-.option-container {
+.optionContainer {
     margin: 9px 0;
     padding: 10px 0;
     max-height: 150px;
@@ -50,7 +50,7 @@
     overflow-x: hidden;
     overflow-y: auto;
 }
-.option-container li {
+.optionContainer li {
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -63,11 +63,11 @@
     list-style: none;
     cursor: pointer;
 }
-.option-container li:hover {
+.optionContainer li:hover {
     color: #ffffff;
     background: #4daef2;
 }
-.option-container .active {
+.optionContainer .active {
     color: #ffffff;
     background: #4daef2;
 }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "./index.css";
+import style from "./index.module.css";
 import icon_2mtem from "../../assets/image/icon_2m_tem.png";
 import icon_10m_wind_direction from "../../assets/image/icon_10m_wind_direction.png";
 import icon_10m_wend_speed from "../../assets/image/icon_10m_wend_speed.png";
@@ -22,22 +22,22 @@ export default function AirportVerificationSituation() {
         { id: 9, label: "低云云底高", src: icon_low_clouds_high, style: { width: "26px", height: "26px" } }
     ];
     return (
-        <div className="airport-verification">
-            <div className="airport-operater">
+        <div className={style.airportVerification}>
+            <div className={style.airportOperater}>
                 {btnList.map((item) => (
                     <div
-                        className={`airport-btn ${item.id === operate ? "airport-btn-active" : ""}`}
+                        className={`${style.airportBtn} ${item.id === operate ? style.active : ""}`}
                         key={item.id}
                         onClick={() => setOperate(item.id)}
                     >
                         <img style={item.style} src={item.src} alt="icon" />
-                        {item.type && <span className="num">{item.type}</span>}
+                        {item.type && <span className={style.num}>{item.type}</span>}
                     </div>
                 ))}
             </div>
-            <div className="airport-btn-desc">
+            <div className={style.desc}>
                 {btnList.map((item) => (
-                    <div className="airport-desc-item" key={item.id}>
+                    <div className={style.descItem} key={item.id}>
                         <span>{item.label}</span>
                     </div>
                 ))}

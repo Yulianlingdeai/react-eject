@@ -11,15 +11,23 @@ import ModelSelect from "../components/ModelSelect";
 import TimeIntervalSelect from "../components/TimeIntervalSelect";
 import TimeSelect from "../components/TimeSelect";
 import TimeAxis from "../components/TimeAxis";
+import AirportVerificationModal from "../components/AirportVerificationModal";
 
 export default function MainContainer() {
     const [type, setType] = useState(1);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
+    const handleShowModal = () => {
+        setIsModalOpen(true);
+    };
     const handleChangeType = (num: number) => {
         setType(num);
     };
     return (
         <>
-            <Header></Header>
+            <Header onClick={handleShowModal}></Header>
             <VerificationBtnList type={type} handleChangeType={handleChangeType}></VerificationBtnList>
             {type === 1 && <AirportVerificationSituation></AirportVerificationSituation>}
             {type === 1 && <VerificationMethods></VerificationMethods>}
@@ -31,6 +39,7 @@ export default function MainContainer() {
             <TimeSelect></TimeSelect>
             <TimeIntervalSelect></TimeIntervalSelect>
             <TimeAxis></TimeAxis>
+            <AirportVerificationModal open={isModalOpen} onClose={handleCloseModal}></AirportVerificationModal>
         </>
     );
 }

@@ -1,9 +1,9 @@
-.verification-setting {
+.verificationSetting {
     position: absolute;
     top: 77px;
     right: 40px;
 }
-.setting-item {
+.settingItem {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,11 +17,11 @@
 .active {
     background: #0096ff;
 }
-.icon-airport-verification-setting {
+.iconAirportVerificationSetting {
     width: 26px;
     height: 26px;
 }
-.icon-airport-setting {
+.iconAirportSetting {
     width: 20.8px;
     height: 24px;
 }

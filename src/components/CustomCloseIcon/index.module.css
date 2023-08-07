@@ -1,9 +1,7 @@
-.close-icon-container {
+.container {
     position: absolute;
     right: 20px;
     top: 20px;
-}
-.close-icon {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,8 +9,9 @@
     height: 36px;
     border-radius: 10px;
     background: #d39422;
+    cursor: pointer;
 }
-.close-icon img {
+.container img {
     width: 17.28px;
     height: 17px;
 }
