@@ -3,7 +3,7 @@ import style from "./index.module.css";
 import icon_air from "../../assets/image/icon_air.png";
 import icon_search from "../../assets/image/icon_search.png";
 
-export default function SearchInput() {
+export default function SearchInput({ className, inputClassName }: { className?: string; inputClassName?: string }) {
     const [inputValue, setInputValue] = useState("");
     const [showDropdown, setShowDropdown] = useState(false);
     const [options] = useState(["Apple", "Banana", "Cherry", "Orange"]);
@@ -25,11 +25,12 @@ export default function SearchInput() {
         setShowDropdown(false); // 隐藏下拉框，当选择选项时
     };
     return (
-        <div className={style.container}>
+        <div className={`${style.container} ${className}`}>
             <div className={style.logo}>
                 <img src={icon_air} alt="" />
             </div>
             <input
+                className={inputClassName}
                 type="text"
                 value={inputValue}
                 onChange={handleInputChange}

@@ -21,6 +21,7 @@
     "@typescript-eslint/parser": "^6.2.1",
     "antd": "^5.8.1",
     "dayjs": "^1.11.9",
+    "echarts": "^5.4.3",
     "eslint": "^8.46.0",
     "eslint-config-prettier": "^8.9.0",
     "eslint-plugin-prettier": "^5.0.0",

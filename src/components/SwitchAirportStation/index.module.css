@@ -1,0 +1,62 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 36px;
+}
+.buttonText {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 25px;
+    margin-left: 5px;
+    color: #ffffff;
+}
+.popoverContainer {
+    width: 550px;
+    border-radius: 8px;
+    background: rgba(22, 46, 77, 0.95);
+}
+.popoverHeader {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    border-bottom: 1px solid rgba(238, 245, 255, 0.4);
+}
+.searchContainer {
+    padding: 26px 40px 18px;
+    border-bottom: 1px solid rgba(238, 245, 255, 0.4);
+}
+.searchInput {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: translateX(0);
+}
+.searchContainer .input {
+    width: 100%;
+}
+.stationContainer {
+    padding: 23px 26px 28px 26px;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(238, 245, 255, 0.4);
+}
+.pagination {
+    padding: 35px 0 0 0;
+}
+.footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 21px 0;
+}
+.text {
+    font-size: 16px;
+    font-weight: 500;
+    /* line-height: 25px; */
+    color: #ffffff;
+}
+.closeIcon {
+    padding: 0 20px;
+    margin-left: auto;
+    cursor: pointer;
+}

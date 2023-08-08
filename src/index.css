@@ -68,3 +68,19 @@ li {
 .ant-checkbox-group-item {
     padding: 4px 0 !important;
 }
+
+.custom-radio {
+    width: 100%;
+    padding: 0 20px;
+}
+
+.ant-popover .ant-popover-inner {
+    padding: 0;
+}
+
+.ant-tag {
+    padding: 7px 15px;
+    color: #4daef2;
+    background: #eef5ff;
+    border-radius: 8px;
+}

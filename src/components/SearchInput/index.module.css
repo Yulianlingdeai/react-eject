@@ -41,6 +41,9 @@
 }
 
 .optionContainer {
+    position: absolute;
+    top: 30px;
+    width: 100%;
     margin: 9px 0;
     padding: 10px 0;
     max-height: 150px;

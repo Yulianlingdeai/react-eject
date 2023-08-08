@@ -1,0 +1,51 @@
+.ant-radio-wrapper {
+    width: 31%;
+    padding: 4px 0;
+    color: #ffffff;
+}
+.ant-radio-wrapper .ant-radio-inner {
+    width: 22px;
+    height: 22px;
+    background: transparent;
+    border: 2px solid rgba(155, 189, 217, 0.6);
+}
+.ant-radio-wrapper .ant-radio-checked .ant-radio-inner {
+    background: #4daef2;
+    border-color: #4daef2;
+}
+.ant-radio-wrapper .ant-radio-checked .ant-radio-inner::after {
+    transform: scale(0.8);
+}
+.ant-pagination {
+    color: #ffffff;
+}
+.ant-pagination .ant-pagination-item {
+    width: 24px;
+    min-width: 24px;
+    height: 24px;
+    margin-right: 0;
+}
+.ant-pagination .ant-pagination-item a {
+    width: 24px;
+    min-width: 24px;
+    height: 24px;
+    color: #ffffff;
+    line-height: 24px;
+    margin-right: 0;
+    padding: 0;
+}
+.ant-pagination .ant-pagination-item-active a {
+    width: 24px;
+    min-width: 24px;
+    height: 24px;
+    color: #000000;
+    line-height: 24px;
+    margin-right: 0;
+    padding: 0;
+}
+.ant-pagination .ant-pagination-options {
+    margin-left: 0;
+}
+/* .ant-pagination .ant-pagination-options-quick-jumper input {
+    margin: 0;
+} */
