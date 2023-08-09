@@ -1,22 +1,7 @@
-.modalHeader {
-    width: 100%;
-    height: 56px;
-    padding: 10px 20px;
-    line-height: 36px;
-    background: #1c7bbe;
-    font-size: 24px;
-    font-weight: bold;
-    color: #ffffff;
-}
 .switchAirport {
     position: absolute;
     top: 10px;
     right: 78px;
-}
-.close {
-    top: 10px;
-    right: 20px;
-    background: rgba(0, 0, 0, 0.3);
 }
 .verificationBtns {
     display: flex;
@@ -67,7 +52,7 @@
 }
 .mainLeft {
     width: 145px;
-    height: 100%;
+    /* height: 100%; */
     border-right: 1px solid #d8d8d8;
 }
 .mainRight {
@@ -112,4 +97,13 @@
     line-height: 25px;
     margin-left: 5px;
     color: #ffffff;
+}
+.customRadio {
+    width: 100%;
+    padding: 0 20px;
+}
+.customRadio .ant-radio-wrapper {
+    /* width: 31%; */
+    padding: 4px 0;
+    color: #000000;
 }

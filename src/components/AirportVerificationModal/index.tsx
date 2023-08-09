@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { Modal, DatePicker, Checkbox, Select, Button, Radio, Space } from "antd";
+import React, { useState, useEffect } from "react";
+import { Modal, DatePicker, Checkbox, Select, Radio, Space } from "antd";
 import type { RadioChangeEvent } from "antd";
 import type { DatePickerProps } from "antd/es/date-picker";
 const CheckboxGroup = Checkbox.Group;
 import type { CheckboxValueType } from "antd/es/checkbox/Group";
 import dayjs, { Dayjs } from "dayjs";
-import CustomCloseIcon from "../CustomCloseIcon";
+import ModalHeader from "../ModalHeader";
 import style from "./index.module.css";
 import EchartComponent from "../EchartComponent";
 import SwitchAirportStation from "../SwitchAirportStation";
@@ -18,18 +18,9 @@ import icon_visibility from "../../assets/image/icon_visibility.png";
 import icon_low_cloud_cover from "../../assets/image/icon_low_cloud_cover.png";
 import icon_low_clouds_high from "../../assets/image/icon_low_clouds_high.png";
 
-import icon_download_pic from "../../assets/image/icon_download_pic.svg";
-import icon_download_table from "../../assets/image/icon_download_table.svg";
-import icon_switch_echart from "../../assets/image/icon_switch_echart.svg";
+import OperateButton from "../OperateButton";
 
 type props = { open: boolean; onClose: () => void };
-const CustomModalHeader = ({ onClose }: any) => (
-    <div className={style.modalHeader}>
-        <h3>某某机场某某某检验</h3>
-        <SwitchAirportStation className={style.switchAirport}></SwitchAirportStation>
-        <CustomCloseIcon className={style.close} onClick={onClose}></CustomCloseIcon>
-    </div>
-);
 // const { RangePicker } = DatePicker;
 const btnList = [
     { id: 1, label: "2m气温", src: icon_2mtem, style: { width: "22px", height: "32px" } },
@@ -60,12 +51,17 @@ export default function AirportVerificationModal({ open, onClose }: props) {
     const [endTime, setEndTime] = useState<Dayjs | null>(null);
     const [startTimeCheckedList, setStartTimeCheckList] = useState<CheckboxValueType[]>(startTimedefaultCheckedList);
     const [modelCheckedList, setModelCheckList] = useState<CheckboxValueType[]>(defaultCheckedList);
+    useEffect(() => {
+        if (!open) {
+            // 执行清理操作，比如取消事件监听或清除定时器
+            return () => {
+                // 清理逻辑
+            };
+        }
+    }, [open]);
     const handleChangeMethods = (e: RadioChangeEvent) => {
         console.log("radio checked", e.target.value);
         setMethods(e.target.value);
-    };
-    const handleOk = () => {
-        // setIsModalOpen(false);
     };
     const handleCancel = () => {
         onClose();
@@ -99,12 +95,14 @@ export default function AirportVerificationModal({ open, onClose }: props) {
     return (
         <Modal
             width={1080}
-            title={<CustomModalHeader onClose={handleCancel} />}
+            title={
+                <ModalHeader onClose={handleCancel}>
+                    <SwitchAirportStation className={style.switchAirport}></SwitchAirportStation>
+                </ModalHeader>
+            }
             closeIcon={false}
             centered
             open={open}
-            onOk={handleOk}
-            onCancel={handleCancel}
             footer={null}
         >
             <ul className={style.verificationBtns}>
@@ -156,7 +154,7 @@ export default function AirportVerificationModal({ open, onClose }: props) {
                         value={modelCheckedList}
                         onChange={handleChangeModelCheckedList}
                     />
-                    <Radio.Group className="custom-radio" onChange={handleChangeMethods} value={methods}>
+                    <Radio.Group className={style.customRadio} onChange={handleChangeMethods} value={methods}>
                         <Space direction="vertical">
                             <Radio value={1}>ME</Radio>
                             <Radio value={2}>MAE</Radio>
@@ -166,30 +164,9 @@ export default function AirportVerificationModal({ open, onClose }: props) {
                     </Radio.Group>
                 </div>
                 <div className={style.mainRight}>
-                    <div className={style.echartTop}>
-                        <Button
-                            className={`${style.button} ${style.buttonGap}`}
-                            style={{ background: "#4DAEF2" }}
-                            type="primary"
-                        >
-                            <img className={style.downloadPic} src={icon_download_pic} alt="" />
-                            <span className={style.buttonText}>下载图片</span>
-                        </Button>
-                        <Button className={style.button} style={{ background: "#2FC25B" }} type="primary">
-                            <img src={icon_download_table} alt="" />
-                            <span className={style.buttonText}>下载表格</span>
-                        </Button>
-                        <Button
-                            className={`${style.button} ${style.switch}`}
-                            style={{ background: "#1C7BBE" }}
-                            type="primary"
-                        >
-                            <img src={icon_switch_echart} alt="" />
-                            <span className={style.buttonText}>切换柱状图</span>
-                        </Button>
-                    </div>
+                    <OperateButton></OperateButton>
                     <div className={style.echarts}>
-                        <EchartComponent></EchartComponent>
+                        <EchartComponent visible={open}></EchartComponent>
                     </div>
                 </div>
             </div>

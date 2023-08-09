@@ -82,7 +82,7 @@ export default function SwitchAirportStation({ className }: { className?: string
                                 </Tag>
                             </Space>
                         </div>
-                        <div className={style.stationRadio}>
+                        <div className="stationRadio">
                             <Radio.Group onChange={onChange} value={stationId}>
                                 {stationList.map((item) => (
                                     <Radio key={item.value} value={item.value}>

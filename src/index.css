@@ -61,17 +61,15 @@ li {
     width: 0 !important;
 }
 
+.ant-modal .ant-modal-header {
+    margin: 0;
+}
 .ant-modal .ant-modal-content {
     padding: 0;
 }
 
 .ant-checkbox-group-item {
     padding: 4px 0 !important;
-}
-
-.custom-radio {
-    width: 100%;
-    padding: 0 20px;
 }
 
 .ant-popover .ant-popover-inner {
@@ -83,4 +81,34 @@ li {
     color: #4daef2;
     background: #eef5ff;
     border-radius: 8px;
+}
+.ant-radio-wrapper .ant-radio-inner {
+    width: 22px;
+    height: 22px;
+    background: transparent;
+    border: 2px solid rgba(155, 189, 217, 0.6);
+}
+.ant-radio-wrapper .ant-radio-checked .ant-radio-inner {
+    background: #4daef2;
+    border-color: #4daef2;
+}
+.ant-radio-wrapper .ant-radio-checked .ant-radio-inner::after {
+    transform: scale(0.8);
+}
+
+.stationRadio {
+    padding-top: 20px;
+}
+.stationRadio .ant-radio-wrapper {
+    width: 31%;
+    padding: 4px 0;
+    color: #ffffff;
+}
+.areaForm .ant-picker {
+    border-radius: 16px;
+}
+.areaForm .ant-form-item .ant-form-item-label > label {
+    font-size: 16px;
+    font-weight: bold;
+    color: #4daef2;
 }

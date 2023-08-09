@@ -12,12 +12,16 @@ import TimeIntervalSelect from "../components/TimeIntervalSelect";
 import TimeSelect from "../components/TimeSelect";
 import TimeAxis from "../components/TimeAxis";
 import AirportVerificationModal from "../components/AirportVerificationModal";
+import AreaVerificationModal from "../components/AreaVerificationModal";
 
 export default function MainContainer() {
     const [type, setType] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const handleCloseModal = () => {
         setIsModalOpen(false);
+    };
+    const handleCloseAreaModal = () => {
+        setType(1);
     };
     const handleShowModal = () => {
         setIsModalOpen(true);
@@ -40,6 +44,7 @@ export default function MainContainer() {
             <TimeIntervalSelect></TimeIntervalSelect>
             <TimeAxis></TimeAxis>
             <AirportVerificationModal open={isModalOpen} onClose={handleCloseModal}></AirportVerificationModal>
+            <AreaVerificationModal open={type === 2} onClose={handleCloseAreaModal}></AreaVerificationModal>
         </>
     );
 }

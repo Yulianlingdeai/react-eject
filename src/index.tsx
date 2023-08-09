@@ -5,11 +5,26 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ConfigProvider } from "antd";
+import zhCN from "antd/locale/zh_CN";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 root.render(
     <React.StrictMode>
-        <ConfigProvider>
+        <ConfigProvider
+            locale={zhCN}
+            theme={{
+                token: {
+                    colorPrimary: "#4DAEF2",
+                    borderRadius: 6
+                },
+                components: {
+                    Button: {
+                        colorPrimary: "#4DAEF2",
+                        algorithm: true
+                    }
+                }
+            }}
+        >
             <App />
         </ConfigProvider>
     </React.StrictMode>
