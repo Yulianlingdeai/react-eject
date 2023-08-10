@@ -61,14 +61,19 @@ export default function AirportSetting({ open, onClose }: props) {
     return (
         <Drawer
             width={980}
-            title={<div style={{ fontSize: "24px", fontWeight: "bold", color: "#3D3D3D" }}>机场设置</div>}
+            title={
+                <div className="drawer-title">
+                    机场设置
+                    <CustomCloseIcon onClick={handleCloseDrawer} backgroundColor="#D39422"></CustomCloseIcon>
+                </div>
+            }
             headerStyle={{ padding: "20px 0 20px 0", borderBottom: "none", textAlign: "center" }}
             bodyStyle={{ padding: 0 }}
             rootClassName="drawer-container"
             placement="right"
             onClose={handleCloseDrawer}
             open={open}
-            closeIcon={<CustomCloseIcon></CustomCloseIcon>}
+            closeIcon={false}
         >
             <div className={style.searchForm}>
                 <Form

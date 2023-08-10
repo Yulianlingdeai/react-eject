@@ -104,14 +104,19 @@ export default function AirportVerificationSettingDrawer({ open, onClose }: prop
         <>
             <Drawer
                 width={600}
-                title={<div style={{ fontSize: "24px", fontWeight: "bold", color: "#3D3D3D" }}>机场检验设置</div>}
+                title={
+                    <div className="drawer-title">
+                        机场检验设置
+                        <CustomCloseIcon onClick={handleCloseDrawer} backgroundColor="#D39422"></CustomCloseIcon>
+                    </div>
+                }
                 headerStyle={{ padding: "20px 0 20px 0", borderBottom: "none", textAlign: "center" }}
                 bodyStyle={{ padding: 0 }}
                 rootClassName="drawer-container"
                 placement="right"
                 onClose={handleCloseDrawer}
                 open={open}
-                closeIcon={<CustomCloseIcon></CustomCloseIcon>}
+                closeIcon={false}
             >
                 <SettingItem title="检验要素">
                     <div className={style.elementsBtn}>

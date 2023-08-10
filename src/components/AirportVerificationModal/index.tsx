@@ -96,7 +96,7 @@ export default function AirportVerificationModal({ open, onClose }: props) {
         <Modal
             width={1080}
             title={
-                <ModalHeader onClose={handleCancel}>
+                <ModalHeader title="某某机场某某某检验" onClose={handleCancel}>
                     <SwitchAirportStation className={style.switchAirport}></SwitchAirportStation>
                 </ModalHeader>
             }

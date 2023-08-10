@@ -8,10 +8,7 @@
     width: 48px;
     height: 36px;
     border-radius: 10px;
-    background: #d39422;
+    /* background: #d39422; */
     cursor: pointer;
-}
-.container img {
-    width: 17.28px;
-    height: 17px;
+    border: none;
 }

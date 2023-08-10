@@ -13,10 +13,12 @@ import TimeSelect from "../components/TimeSelect";
 import TimeAxis from "../components/TimeAxis";
 import AirportVerificationModal from "../components/AirportVerificationModal";
 import AreaVerificationModal from "../components/AreaVerificationModal";
+import CustomArea from "../components/CustomArea";
 
 export default function MainContainer() {
     const [type, setType] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isShowCustomArea, setIsShowCustomArea] = useState(false);
     const handleCloseModal = () => {
         setIsModalOpen(false);
     };
@@ -28,6 +30,13 @@ export default function MainContainer() {
     };
     const handleChangeType = (num: number) => {
         setType(num);
+    };
+    const handleShowCustomArea = () => {
+        setType(0);
+        setIsShowCustomArea(true);
+    };
+    const handleCloseCustomArea = () => {
+        setIsShowCustomArea(false);
     };
     return (
         <>
@@ -44,7 +53,12 @@ export default function MainContainer() {
             <TimeIntervalSelect></TimeIntervalSelect>
             <TimeAxis></TimeAxis>
             <AirportVerificationModal open={isModalOpen} onClose={handleCloseModal}></AirportVerificationModal>
-            <AreaVerificationModal open={type === 2} onClose={handleCloseAreaModal}></AreaVerificationModal>
+            <AreaVerificationModal
+                open={type === 2}
+                onClose={handleCloseAreaModal}
+                showCustomArea={handleShowCustomArea}
+            ></AreaVerificationModal>
+            <CustomArea open={isShowCustomArea} onClose={handleCloseCustomArea}></CustomArea>
         </>
     );
 }

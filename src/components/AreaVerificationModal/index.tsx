@@ -8,7 +8,7 @@ import type { CheckboxValueType } from "antd/es/checkbox/Group";
 const CheckboxGroup = Checkbox.Group;
 import icon_back from "../../assets/image/icon_back.svg";
 
-type props = { open: boolean; onClose: () => void };
+type props = { open: boolean; onClose: () => void; showCustomArea: () => void };
 const veriContentList = [
     { id: 1, label: "2m气温" },
     { id: 2, label: "10m风向" },
@@ -31,6 +31,10 @@ const options = [
     { label: "实况一", value: 1 },
     { label: "实况二", value: 2 }
 ];
+const areaList = [
+    { label: "北京", value: 1 },
+    { label: "自定义区域", value: 2 }
+];
 const gapList = [
     { label: "24H", value: 24 },
     { label: "48H", value: 48 },
@@ -41,7 +45,7 @@ const gapList = [
     { label: "168H", value: 168 },
     { label: "192H", value: 192 }
 ];
-export default function AreaVerificationModal({ open, onClose }: props) {
+export default function AreaVerificationModal({ open, onClose, showCustomArea }: props) {
     const [form] = Form.useForm();
     const [form2] = Form.useForm();
     const [contentId, setContentId] = useState(0);
@@ -61,6 +65,10 @@ export default function AreaVerificationModal({ open, onClose }: props) {
         // setStartTimeCheckList(list);
         console.log(list);
     };
+    /**改变区域 */
+    const handleChangeArea = () => {
+        showCustomArea();
+    };
     const handleChange = (value: string[]) => {
         console.log(`selected ${value}`);
     };
@@ -73,7 +81,7 @@ export default function AreaVerificationModal({ open, onClose }: props) {
     return (
         <Modal
             width={1280}
-            title={<ModalHeader onClose={handleCancel} />}
+            title={<ModalHeader title="区域检验" onClose={handleCancel} />}
             closeIcon={false}
             centered
             open={open}
@@ -157,8 +165,8 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                                     allowClear
                                     style={{ minWidth: "163px" }}
                                     placeholder="请选择区域"
-                                    onChange={handleChange}
-                                    options={options}
+                                    onChange={handleChangeArea}
+                                    options={areaList}
                                 />
                             </Form.Item>
                             <Form.Item>

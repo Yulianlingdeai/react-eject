@@ -18,10 +18,14 @@ li {
     width: 100%;
     box-sizing: border-box;
 }
-
-.custom-checkbox-group {
-    /* padding: 5px 0; */
+.drawer-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3d3d3d;
 }
+/* .custom-checkbox-group {
+    padding: 5px 0;
+} */
 .custom-checkbox-group .ant-checkbox-inner {
     width: 22px;
     height: 22px;
@@ -111,4 +115,45 @@ li {
     font-size: 16px;
     font-weight: bold;
     color: #4daef2;
+}
+
+.drawerContainer .ant-drawer-content-wrapper {
+    height: 578px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.drawerContainer .ant-drawer-content {
+    background: rgba(26, 53, 94, 0.9);
+}
+.drawerContainer .ant-drawer-body {
+    padding: 20px 0;
+}
+.area-operate .ant-popover-inner {
+    padding: 20px 30px 13px;
+    background: rgba(26, 53, 94, 0.9);
+}
+.area-operate .ant-popover-title {
+    min-width: fit-content;
+    font-size: 16px;
+    font-weight: 500;
+    color: #ffffff;
+}
+.detailModal .ant-modal-close {
+    top: 9px;
+    right: 15px;
+}
+.detailModal .ant-modal-content {
+    overflow: hidden;
+}
+.detailModal .ant-modal-body {
+    background: rgba(26, 53, 94, 0.9);
+}
+.addAreaModal .ant-modal-close {
+    width: 0;
+    height: 0;
+}
+.addAreaModal .ant-modal-content {
+    overflow: hidden;
 }

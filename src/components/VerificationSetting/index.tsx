@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import style from "./index.module.css";
 import AirportVerificationSettingDrawer from "../AirportVerificationSettingDrawer";
-import AirportSetting from "../AirportSetting";
+import AirportSettingDrawer from "../AirportSettingDrawer";
 import icon_airport_setting from "../../assets/image/icon_airport_setting.png";
 import icon_airport_verification_setting from "../../assets/image/icon_airport_verification_setting.png";
 
@@ -44,7 +44,10 @@ export default function VerificationSetting() {
                 open={isShowAirportVeriSetting}
                 onClose={handleCloseAirportVeriSetting}
             ></AirportVerificationSettingDrawer>
-            <AirportSetting open={isShowAirportSetting} onClose={handleCloseAirportSetting}></AirportSetting>
+            <AirportSettingDrawer
+                open={isShowAirportSetting}
+                onClose={handleCloseAirportSetting}
+            ></AirportSettingDrawer>
         </>
     );
 }
