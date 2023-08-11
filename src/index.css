@@ -72,9 +72,9 @@ li {
     padding: 0;
 }
 
-.ant-checkbox-group-item {
+/* .ant-checkbox-group-item {
     padding: 4px 0 !important;
-}
+} */
 
 .ant-popover .ant-popover-inner {
     padding: 0;
@@ -156,4 +156,9 @@ li {
 }
 .addAreaModal .ant-modal-content {
     overflow: hidden;
+}
+
+.ant-form-item .ant-form-item-label > label.ant-form-item-no-colon::after {
+    width: 0;
+    margin-inline-start: 0;
 }

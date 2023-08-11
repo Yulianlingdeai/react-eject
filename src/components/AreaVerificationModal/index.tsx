@@ -1,5 +1,7 @@
-import React, { useState } from "react";
-import { Modal, Button, ConfigProvider, DatePicker, Form, Checkbox, Select } from "antd";
+import React, { useEffect, useState } from "react";
+import { Modal, Button, ConfigProvider, DatePicker, Form, Checkbox, Select, Radio } from "antd";
+import type { RadioChangeEvent } from "antd";
+import dayjs from "dayjs";
 import style from "./index.module.css";
 import ModalHeader from "../ModalHeader";
 import OperateButton from "../OperateButton";
@@ -7,34 +9,23 @@ import EchartComponent from "../EchartComponent";
 import type { CheckboxValueType } from "antd/es/checkbox/Group";
 const CheckboxGroup = Checkbox.Group;
 import icon_back from "../../assets/image/icon_back.svg";
+import apis from "../../apis";
+import type { configKeys, contentItem, methodItem, aoiItem } from "../../typings";
 
-type props = { open: boolean; onClose: () => void; showCustomArea: () => void };
-const veriContentList = [
-    { id: 1, label: "2m气温" },
-    { id: 2, label: "10m风向" },
-    { id: 3, label: "10m风速" },
-    { id: 4, label: "10m综合风" },
-    { id: 5, label: "12h降水" },
-    { id: 6, label: "24h降水" },
-    { id: 7, label: "能见度" },
-    { id: 8, label: "低云云量" },
-    { id: 9, label: "低云云底高" }
+type props = { open: boolean; onClose: () => void; showCustomArea?: () => void };
+type obsItem = { label: string; value: string | number };
+const startTimeOptions = [
+    { label: "08", value: "08" },
+    { label: "20", value: "20" }
 ];
-const veriMethodList = [
-    { id: 1, label: "ME" },
-    { id: 2, label: "MAE" },
-    { id: 3, label: "RMSE" },
-    { id: 4, label: "PC" }
+const scoreTypeList = [
+    { label: "逐日评分", value: "ZR" },
+    { label: "综合评分", value: "ZH" }
 ];
-const startTimeOptions = ["08", "12"];
-const options = [
-    { label: "实况一", value: 1 },
-    { label: "实况二", value: 2 }
-];
-const areaList = [
-    { label: "北京", value: 1 },
-    { label: "自定义区域", value: 2 }
-];
+// const areaList = [
+//     { label: "北京", value: 1 },
+//     { label: "自定义区域", value: 2 }
+// ];
 const gapList = [
     { label: "24H", value: 24 },
     { label: "48H", value: 48 },
@@ -45,17 +36,162 @@ const gapList = [
     { label: "168H", value: 168 },
     { label: "192H", value: 192 }
 ];
-export default function AreaVerificationModal({ open, onClose, showCustomArea }: props) {
+const buttonThemeConfig = {
+    colorPrimary: "#cc8f21",
+    algorithm: true
+};
+export default function AreaVerificationModal({ open, onClose }: props) {
     const [form] = Form.useForm();
     const [form2] = Form.useForm();
-    const [contentId, setContentId] = useState(0);
-    const [methodId, setMethodId] = useState(0);
+    // getFieldDecorator
+    const { getFieldValue } = form2;
+    const [currentElem, setCurrentElem] = useState("");
+    const [currentMethodValue, setCurrentMethodValue] = useState("");
     const [gap, setGap] = useState(0);
-    const handleSelectContent = (id: number) => {
-        setContentId(id);
+    const [veriContentList, setVeriContentList] = useState<contentItem[]>([]);
+    const [veriMethodList, setVeriMethodList] = useState<methodItem[]>([]);
+    const [aoiList, setAoiList] = useState<aoiItem[]>([]);
+    const [obsList, setObsList] = useState<obsItem[]>([]);
+    const [productList, setProductList] = useState<obsItem[]>([]);
+    const [areaList, setAreaList] = useState<obsItem[]>([]);
+    const [forcastHourList, setForcastHourList] = useState<obsItem[]>([]);
+    useEffect(() => {
+        const fetchConfig = async () => {
+            try {
+                const res = await apis.getVeriConfigParamsByFuncKey({ keyName: "REGION" });
+                console.log("区域检验的检验参数", res.REGION);
+                const data = res.REGION;
+                delete data.des;
+                const sortList = Object.keys(data)
+                    .map((item) => data[item as configKeys])
+                    .sort((a, b) => a.sort - b.sort);
+                const contentList = sortList.reduce((total, item) => {
+                    const list = item.aoi.contents.sort((a, b) => a.sort - b.sort);
+                    return [...total, ...list];
+                }, [] as contentItem[]);
+                // 更新状态放在 fetchConfig 内部
+                setAoiList(sortList);
+                setVeriContentList(contentList);
+                const firstContent = contentList[0];
+                setCurrentElem(firstContent.elem);
+                const currentContent = sortList.find((item) =>
+                    item.aoi.contents.find((element) => element.elem === firstContent.elem)
+                );
+                if (currentContent) {
+                    setVeriMethodList(currentContent.moc.contents);
+                    const firstMethod = currentContent.moc.contents[0];
+                    setCurrentMethodValue(firstMethod.value);
+                }
+                getObsList(firstContent);
+                getProductList(firstContent);
+                getForcastHour(firstContent);
+            } catch (e) {
+                console.log("error", e);
+            }
+        };
+        fetchConfig(); // 调用获取数据的函数
+    }, []);
+    const onFinish = () => {};
+    /**检验查询 */
+    const handleSearchResult = async (values: any) => {
+        console.log("Success:", values);
+        const { startTime, endTime, models, time, obsName, regionId } = values;
+        const veriType = getFieldValue("veriType");
+        const forcastHour = getFieldValue("forcastHour");
+        try {
+            const data = {
+                startTime: dayjs(startTime).format("YYYY-MM-DD"),
+                endTime: dayjs(endTime).format("YYYY-MM-DD"),
+                aoi: currentElem,
+                moc: currentMethodValue,
+                time: time.join(","),
+                obsName: obsName,
+                models: models,
+                forcastHour: forcastHour,
+                pressType: "SURF",
+                pressValue: "0",
+                regionId: regionId,
+                // titleName: "示例：四川省2022-07-08~2022-07-10 24H时次间隔 气温平均误差",
+                veriType: veriType
+            };
+            const res = await apis.getRegionVeriResult(data);
+            console.log(res);
+        } catch (e) {
+            console.log("error", e);
+        }
     };
-    const handleSelectMethod = (id: number) => {
-        setMethodId(id);
+    /**获取实况列表 */
+    const getObsList = (content: contentItem) => {
+        const list = content.obs_array.split(",").map((item) => {
+            return {
+                label: item,
+                value: item
+            };
+        });
+        setObsList(list);
+    };
+    /**获取产品列表 */
+    const getProductList = (content: contentItem) => {
+        const list = content.model_array.split(",").map((item) => {
+            return {
+                label: item,
+                value: item
+            };
+        });
+        setProductList(list);
+    };
+    /**选择检验内容 */
+    const handleSelectContent = (elem: string) => {
+        setCurrentElem(elem);
+        const currentContent = aoiList.find((item) => item.aoi.contents.some((element) => element.elem === elem));
+        if (currentContent) {
+            setVeriMethodList(currentContent.moc.contents);
+            const currentMethod = currentContent.moc.contents.find((element) => element.value === currentMethodValue);
+            console.log("currentMethod===>>>", currentMethod);
+            if (!currentMethod) {
+                const firstMethod = currentContent.moc.contents[0];
+                setCurrentMethodValue(firstMethod.value);
+            }
+        }
+    };
+    /**获取时效间隔 */
+    const getForcastHour = (content: contentItem) => {
+        const list = content.forcastHour.split(",").map((item) => {
+            return {
+                label: item,
+                value: item
+            };
+        });
+        setForcastHourList(list);
+    };
+    const handleSearchAreaList = (value: string) => {
+        console.log("选择的产品===》》》》》》", value);
+    };
+    /**关闭模式下拉框查询区域 */
+    const handleDropdownVisibleChange = async (open: boolean) => {
+        if (!open) {
+            console.log("关闭下拉框是");
+            const models = form.getFieldValue("models");
+            if (models.length) {
+                try {
+                    const res = await apis.getRegionListByModels({ models: models.join(",") });
+                    console.log("区域列表===>>>>>", res);
+                    setAreaList(
+                        res.fixedRegionInfo.map((item) => {
+                            return {
+                                label: item.regionName,
+                                value: item.regionId
+                            };
+                        })
+                    );
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+        }
+    };
+    const handleSelectMethod = (value: string) => {
+        setCurrentMethodValue(value);
     };
     const handleCancel = () => {
         onClose();
@@ -65,16 +201,18 @@ export default function AreaVerificationModal({ open, onClose, showCustomArea }:
         // setStartTimeCheckList(list);
         console.log(list);
     };
+    const handleChangeScoreType = (e: RadioChangeEvent) => {
+        console.log("radio checked", e.target.value);
+        // setMethods(e.target.value);
+    };
     /**改变区域 */
     const handleChangeArea = () => {
-        showCustomArea();
+        // showCustomArea();
     };
     const handleChange = (value: string[]) => {
         console.log(`selected ${value}`);
     };
-    const onFinish = (values: any) => {
-        console.log("Success:", values);
-    };
+
     const handleChangeGap = (value: number) => {
         setGap(value);
     };
@@ -93,12 +231,12 @@ export default function AreaVerificationModal({ open, onClose, showCustomArea }:
                     <div className={style.content}>
                         {veriContentList.map((item) => (
                             <Button
-                                onClick={() => handleSelectContent(item.id)}
-                                className={`${style.button} ${item.id === contentId ? style.active : ""}`}
-                                key={item.id}
+                                onClick={() => handleSelectContent(item.elem)}
+                                className={`${style.button} ${item.elem === currentElem ? style.active : ""}`}
+                                key={item.elem}
                                 type="primary"
                             >
-                                {item.label}
+                                {item.des}
                             </Button>
                         ))}
                     </div>
@@ -106,12 +244,12 @@ export default function AreaVerificationModal({ open, onClose, showCustomArea }:
                     <div className={style.content}>
                         {veriMethodList.map((item) => (
                             <Button
-                                onClick={() => handleSelectMethod(item.id)}
-                                className={`${style.button} ${item.id === methodId ? style.active : ""}`}
-                                key={item.id}
+                                onClick={() => handleSelectMethod(item.value)}
+                                className={`${style.button} ${item.value === currentMethodValue ? style.active : ""}`}
+                                key={item.value}
                                 type="primary"
                             >
-                                {item.label}
+                                {item.des}
                             </Button>
                         ))}
                     </div>
@@ -121,49 +259,62 @@ export default function AreaVerificationModal({ open, onClose, showCustomArea }:
                         <Form
                             layout="inline"
                             colon={false}
-                            onFinish={onFinish}
+                            onFinish={handleSearchResult}
                             form={form}
                             initialValues={{ layout: "inline" }}
                         >
-                            <Form.Item label="起始时间" name="startTime" style={{ marginBottom: "10px" }}>
+                            <Form.Item
+                                label="起始时间"
+                                initialValue={dayjs("2023-07-01")}
+                                name="startTime"
+                                style={{ marginBottom: "10px" }}
+                            >
                                 <DatePicker onChange={onChange} />
                             </Form.Item>
-                            <Form.Item label="时次" name="startTimeCheckedList" style={{ marginBottom: "10px" }}>
+                            <Form.Item label="时次" initialValue={["08"]} name="time" style={{ marginBottom: "10px" }}>
                                 <div className={style.timeBox}>
                                     <CheckboxGroup
+                                        defaultValue={["08"]}
                                         className="custom-checkbox-group"
                                         options={startTimeOptions}
                                         onChange={handleChangeStartTimeCheckedList}
                                     />
                                 </div>
                             </Form.Item>
-                            <Form.Item label="实况" name="facts" initialValue={[]} style={{ marginBottom: "10px" }}>
+                            <Form.Item label="实况" name="obsName" initialValue={[]} style={{ marginBottom: "10px" }}>
                                 <Select
                                     mode="multiple"
+                                    showSearch={false}
                                     allowClear
                                     style={{ minWidth: "330px" }}
                                     placeholder="请选择实况"
                                     onChange={handleChange}
-                                    options={options}
+                                    options={obsList}
                                 />
                             </Form.Item>
-                            <Form.Item label="结束时间" name="endTime">
+                            <Form.Item label="结束时间" initialValue={dayjs("2023-07-01")} name="endTime">
                                 <DatePicker onChange={onChange} />
                             </Form.Item>
-                            <Form.Item label="产品" name="product" initialValue={[]}>
+                            <Form.Item label="产品" name="models" initialValue={[]}>
                                 <Select
                                     mode="multiple"
+                                    showSearch={false}
+                                    maxTagCount="responsive"
                                     allowClear
                                     style={{ minWidth: "330px" }}
                                     placeholder="请选择产品"
                                     onChange={handleChange}
-                                    options={options}
+                                    onSelect={handleSearchAreaList}
+                                    onDropdownVisibleChange={handleDropdownVisibleChange}
+                                    options={productList}
                                 />
                             </Form.Item>
-                            <Form.Item label="区域" name="area" initialValue={""}>
+                            <Form.Item label="区域" name="regionId" initialValue={null}>
                                 <Select
                                     allowClear
+                                    showSearch={false}
                                     style={{ minWidth: "163px" }}
+                                    defaultValue={null}
                                     placeholder="请选择区域"
                                     onChange={handleChangeArea}
                                     options={areaList}
@@ -173,10 +324,7 @@ export default function AreaVerificationModal({ open, onClose, showCustomArea }:
                                 <ConfigProvider
                                     theme={{
                                         components: {
-                                            Button: {
-                                                colorPrimary: "#cc8f21",
-                                                algorithm: true
-                                            }
+                                            Button: buttonThemeConfig
                                         }
                                     }}
                                 >
@@ -195,22 +343,25 @@ export default function AreaVerificationModal({ open, onClose, showCustomArea }:
                             form={form2}
                             initialValues={{ layout: "inline" }}
                         >
-                            <Form.Item label="评分" name="record">
+                            <Form.Item label="评分" name="veriType" initialValue={"ZR"}>
                                 <div className={style.timeBox}>
-                                    <CheckboxGroup
-                                        className="custom-checkbox-group"
-                                        options={startTimeOptions}
-                                        onChange={handleChangeStartTimeCheckedList}
-                                    />
+                                    <Radio.Group defaultValue={"ZR"} onChange={handleChangeScoreType}>
+                                        {scoreTypeList.map((item) => (
+                                            <Radio key={item.value} value={item.value}>
+                                                {item.label}
+                                            </Radio>
+                                        ))}
+                                    </Radio.Group>
                                 </div>
                             </Form.Item>
-                            <Form.Item label="间隔" name="gap" initialValue={""}>
+                            <Form.Item label="间隔" name="forcastHour" initialValue={null}>
                                 <Select
                                     allowClear
-                                    style={{ minWidth: "100px" }}
+                                    style={{ width: "100px" }}
                                     placeholder="请选择间隔"
+                                    defaultValue={null}
                                     onChange={handleChange}
-                                    options={options}
+                                    options={forcastHourList}
                                 />
                             </Form.Item>
                         </Form>

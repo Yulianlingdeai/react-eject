@@ -16,7 +16,7 @@ import AreaVerificationModal from "../components/AreaVerificationModal";
 import CustomArea from "../components/CustomArea";
 
 export default function MainContainer() {
-    const [type, setType] = useState(1);
+    const [type, setType] = useState(2);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isShowCustomArea, setIsShowCustomArea] = useState(false);
     const handleCloseModal = () => {
