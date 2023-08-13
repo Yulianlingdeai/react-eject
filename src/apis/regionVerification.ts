@@ -1,4 +1,5 @@
 import request from "../utils/request";
+import type { regionResultItem } from "../typings";
 
 export default {
     /**
@@ -7,6 +8,6 @@ export default {
      * @returns
      */
     getRegionVeriResult(data: any) {
-        return request.post("/kj-verification/api/region/veri/getRegionVeriResult", data);
+        return request.post<any, regionResultItem[]>("/kj-verification/api/region/veri/getRegionVeriResult", data);
     }
 };

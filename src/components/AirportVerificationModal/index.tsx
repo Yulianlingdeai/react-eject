@@ -7,7 +7,7 @@ import type { CheckboxValueType } from "antd/es/checkbox/Group";
 import dayjs, { Dayjs } from "dayjs";
 import ModalHeader from "../ModalHeader";
 import style from "./index.module.css";
-import EchartComponent from "../EchartComponent";
+// import EchartComponent from "../EchartComponent";
 import SwitchAirportStation from "../SwitchAirportStation";
 
 import icon_2mtem from "../../assets/image/icon_2m_tem.png";
@@ -165,9 +165,7 @@ export default function AirportVerificationModal({ open, onClose }: props) {
                 </div>
                 <div className={style.mainRight}>
                     <OperateButton></OperateButton>
-                    <div className={style.echarts}>
-                        <EchartComponent visible={open}></EchartComponent>
-                    </div>
+                    <div className={style.echarts}>{/* <EchartComponent visible={open}></EchartComponent> */}</div>
                 </div>
             </div>
         </Modal>

@@ -1,5 +1,5 @@
 import request from "../utils/request";
-import type { configKeys, aoiItem, regionItem } from "../typings";
+import type { configKeys, aoiItem, regionItem, modelListItem } from "../typings";
 type configParams = {
     REGION: {
         [key in configKeys]: aoiItem;
@@ -15,7 +15,7 @@ export default {
      * @param params
      * @returns
      */
-    async getVeriConfigParamsByFuncKey(params: any) {
+    async getVeriConfigParamsByFuncKey(params: { keyName: string }) {
         return await request.get<any, configParams>("/kj-verification/api/system/config/getVeriConfigParamsByFuncKey", {
             params
         });
@@ -29,5 +29,12 @@ export default {
         return await request.get<any, regionList>("/kj-verification/api/system/config/getRegionListByModels", {
             params
         });
+    },
+    /**
+     * 获取模式配置列表
+     * @returns
+     */
+    async getModelList() {
+        return await request.get<any, modelListItem[]>("/kj-verification/api/system/config/getModelList");
     }
 };

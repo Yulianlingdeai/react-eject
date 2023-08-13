@@ -36,3 +36,28 @@ export type regionItem = {
     regionId: number; // 1001;
     regionName: string; // "中国区";
 };
+
+export type regionResultItem = {
+    modelData: {
+        modelName: string; // "EC";
+        value1: string | number; // 0.79;
+        value2: string | number; // "";
+        value3: string | number; // "";
+        value4: string | number; // "";
+        value5: string | number; // "";
+        value6: string | number; // "";
+    }[];
+    time: string;
+};
+
+export type modelListItem = {
+    forcastHour: string; // "";
+    id: number; // 1;
+    maxLat: number; // 90;
+    maxLon: number; // 359;
+    minLat: number; // -90;
+    minLon: number; // 0;
+    modelKey: string; // "T1279";
+    modelName: string; // "T1279";
+    regionIds: string; // "1001,1002";
+};
