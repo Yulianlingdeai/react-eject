@@ -1,19 +1,34 @@
 import React, { useEffect, useState } from "react";
 import * as echarts from "echarts";
-import type { regionResultItem } from "../../typings";
+import type { regionResultItem, basicData } from "../../typings";
+import { Button } from "antd";
+import style from "./index.module.css";
 
 type props = {
-    basicData: {
-        models: string[];
-    };
+    basicData: basicData;
     echartsData: regionResultItem[];
 };
+type rainButtonItem = {
+    id: number;
+    rainLevel: number;
+    rainText: string;
+};
+const rainButtonList: rainButtonItem[] = [
+    { id: 1, rainLevel: 1, rainText: "小雨" },
+    { id: 2, rainLevel: 2, rainText: "中雨" },
+    { id: 3, rainLevel: 3, rainText: "大雨" },
+    { id: 4, rainLevel: 4, rainText: "暴雨" },
+    { id: 5, rainLevel: 5, rainText: "大暴雨" },
+    { id: 6, rainLevel: 6, rainText: "特大暴雨" }
+];
+const colorList = ["#00B578", "#07B9B9", "#3662EC"];
 export default function EchartComponent({ echartsData, basicData }: props) {
     const [chartInstance, setChartInstance] = useState<echarts.ECharts | null>(null);
+    const [rainLevel, setRainLevel] = useState(1);
     useEffect(() => {
         if (chartInstance) {
             chartInstance.clear();
-        } else {
+        } else if (echartsData.length) {
             // 获取图表容器 DOM 元素
             const chartContainer = document.getElementById("chart-container");
             // 初始化 ECharts 实例
@@ -21,22 +36,63 @@ export default function EchartComponent({ echartsData, basicData }: props) {
             setChartInstance(chart);
         }
         console.log("echartsData===>>>>>", echartsData);
+        const { models, title, analyseType, type } = basicData;
         const xAxisData = echartsData.map((item) => item.time);
-        const seriesData = basicData.models.map((model) => {
-            return {
-                name: "温度",
-                type: "line",
-                data: echartsData.map((item) => {
-                    const data = item.modelData.find((element) => element.modelName === model);
-                    return data?.value1;
-                })
-            };
+        const seriesData = models.map((model, index) => {
+            return type === "line"
+                ? {
+                      name: model,
+                      type: type,
+                      symbol: "circle", // 使用圆点
+                      symbolSize: 6, // 设置圆点大小
+                      color: colorList[index] || colorList[0],
+                      connectNulls: true,
+                      data: echartsData.map((item) => {
+                          if (item.modelData) {
+                              const data = item.modelData.find((element) => element.modelName === model);
+                              if (data) {
+                                  return analyseType === 2 ? data.value : data[`value${rainLevel}`];
+                              }
+                          }
+                          return null;
+                      })
+                  }
+                : {
+                      name: model,
+                      type: type,
+                      barMaxWidth: 18,
+                      color: colorList[index] || colorList[0],
+                      data: echartsData.map((item) => {
+                          if (item.modelData) {
+                              const data = item.modelData.find((element) => element.modelName === model);
+                              if (data) {
+                                  return analyseType === 2 ? data.value : data[`value${rainLevel}`];
+                              }
+                          }
+                          return null;
+                      })
+                  };
         });
         // 配置图表选项
         const options = {
             // 在这里配置你的图表选项
+            legend: {
+                show: true,
+                x: "left",
+                data: basicData.models,
+                padding: [90, 0, 0, 60],
+                textStyle: {
+                    color: "rgba(0, 0, 0, 0.6)",
+                    fontSize: "16px"
+                },
+                // selectedMode: true,
+                icon: "circle",
+                formatter: (params: any) => {
+                    return params;
+                }
+            },
             title: {
-                text: "2023-02-01～2023-02-02 08时次 24H预报 地面2m温度 平均误差（单位：°C）",
+                text: title,
                 textStyle: {
                     fontSize: 18,
                     fontWeight: "bold"
@@ -48,10 +104,10 @@ export default function EchartComponent({ echartsData, basicData }: props) {
             },
             grid: {
                 show: false,
-                top: 67,
-                left: 30,
-                right: 30,
-                bottom: 20,
+                top: 125,
+                left: 38,
+                right: 50,
+                bottom: 56,
                 containLabel: true
             },
             tooltip: {
@@ -59,11 +115,16 @@ export default function EchartComponent({ echartsData, basicData }: props) {
             },
             xAxis: {
                 type: "category",
+                boundaryGap: true,
                 axisLine: {
                     show: true,
                     lineStyle: {
-                        color: "#000"
+                        color: "rgba(0, 0, 0, 0.6)"
                     }
+                },
+                axisTick: {
+                    show: true,
+                    alignWithLabel: true
                 },
                 data: xAxisData
             },
@@ -72,7 +133,14 @@ export default function EchartComponent({ echartsData, basicData }: props) {
                 axisLine: {
                     show: true,
                     lineStyle: {
-                        color: "#000"
+                        color: "rgba(0, 0, 0, 0.6)"
+                    }
+                },
+                splitLine: {
+                    show: true,
+                    lineStyle: {
+                        type: "dashed",
+                        color: "#D8D8D8"
                     }
                 }
             },
@@ -88,6 +156,27 @@ export default function EchartComponent({ echartsData, basicData }: props) {
                 chartInstance.clear();
             }
         };
-    }, [echartsData, chartInstance, basicData]);
-    return <div id="chart-container" style={{ width: "100%", height: "521px" }}></div>;
+    }, [echartsData, chartInstance, basicData, rainLevel]);
+    const handleChangeRainLevel = (item: rainButtonItem) => {
+        setRainLevel(item.rainLevel);
+    };
+    return (
+        <div id="chartBox" style={{ position: "relative" }}>
+            <div id="chart-container" style={{ width: "100%", height: "521px" }}></div>
+            {basicData.analyseType !== 2 && (
+                <div className={style.rainContainer}>
+                    {rainButtonList.map((item) => (
+                        <Button
+                            onClick={() => handleChangeRainLevel(item)}
+                            className={`${style.button} ${item.rainLevel === rainLevel ? style.active : ""}`}
+                            key={item.id}
+                            type="primary"
+                        >
+                            {item.rainText}
+                        </Button>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
 }

@@ -19,7 +19,13 @@
     margin-right: 7px;
 }
 .switch {
+    position: relative;
     margin-left: auto;
+}
+.lineInner {
+    position: absolute;
+    top: 15px;
+    left: 19px;
 }
 .buttonText {
     font-size: 18px;

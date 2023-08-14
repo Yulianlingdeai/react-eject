@@ -1,5 +1,5 @@
 import request from "../utils/request";
-import type { configKeys, aoiItem, regionItem, modelListItem } from "../typings";
+import type { configKeys, aoiItem, regionItem, modelListItem, obsListItem } from "../typings";
 type configParams = {
     REGION: {
         [key in configKeys]: aoiItem;
@@ -36,5 +36,12 @@ export default {
      */
     async getModelList() {
         return await request.get<any, modelListItem[]>("/kj-verification/api/system/config/getModelList");
+    },
+    /**
+     * 获取实况配置列表数据
+     * @returns
+     */
+    async getObsConfigList() {
+        return await request.get<any, obsListItem[]>("/kj-verification/api/system/config/getObsConfigList");
     }
 };

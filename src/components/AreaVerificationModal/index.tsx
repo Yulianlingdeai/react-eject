@@ -1,18 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button, ConfigProvider, DatePicker, Form, Checkbox, Select, Radio } from "antd";
 // const { Option } = Select;
+import html2canvas from "html2canvas";
 import dayjs from "dayjs";
 import style from "./index.module.css";
 import ModalHeader from "../ModalHeader";
 import OperateButton from "../OperateButton";
 import EchartComponent from "../EchartComponent";
+import { downLoadFile } from "../../utils";
 const CheckboxGroup = Checkbox.Group;
 import icon_back from "../../assets/image/icon_back.svg";
 import apis from "../../apis";
-import type { configKeys, contentItem, methodItem, aoiItem, regionResultItem, modelListItem } from "../../typings";
+import type {
+    configKeys,
+    contentItem,
+    methodItem,
+    aoiItem,
+    regionResultItem,
+    modelListItem,
+    obsListItem,
+    basicData
+} from "../../typings";
 
 type props = { open: boolean; onClose: () => void; showCustomArea?: () => void };
-type obsItem = { label: string; value: string | number };
+type normalOptionItem = { label: string; value: string | number };
+type modelOptionItem = { forcastHour: string[]; label: string; value: string | number };
+type optionItem = { label: string; value: number };
 const startTimeOptions = [
     { label: "08", value: "08" },
     { label: "20", value: "20" }
@@ -21,16 +34,16 @@ const scoreTypeList = [
     { label: "逐日评分", value: "ZR" },
     { label: "综合评分", value: "ZH" }
 ];
-const gapList = [
-    { label: "24H", value: 24 },
-    { label: "48H", value: 48 },
-    { label: "72H", value: 72 },
-    { label: "96H", value: 96 },
-    { label: "120H", value: 120 },
-    { label: "144H", value: 144 },
-    { label: "168H", value: 168 },
-    { label: "192H", value: 192 }
-];
+// const gapList = [
+//     { label: "24H", value: 24 },
+//     { label: "48H", value: 48 },
+//     { label: "72H", value: 72 },
+//     { label: "96H", value: 96 },
+//     { label: "120H", value: 120 },
+//     { label: "144H", value: 144 },
+//     { label: "168H", value: 168 },
+//     { label: "192H", value: 192 }
+// ];
 const buttonThemeConfig = {
     colorPrimary: "#cc8f21",
     algorithm: true
@@ -39,39 +52,43 @@ export default function AreaVerificationModal({ open, onClose }: props) {
     const [form] = Form.useForm();
     const [form2] = Form.useForm();
     // getFieldDecorator
-    const { getFieldValue } = form2;
+    const { getFieldValue, setFieldValue } = form2;
     const [allModelList, setAllModelList] = useState<modelListItem[]>([]);
+    const [allObsList, setAllObsList] = useState<obsListItem[]>([]);
+    const [initialized, setInitialized] = useState(false);
     // 模式选择下拉框
     const [isDropdownOpen, setDropdownOpen] = useState(false);
     const [currentElem, setCurrentElem] = useState("");
     const [currentMethodValue, setCurrentMethodValue] = useState("");
     const [gap, setGap] = useState(24);
     const [veriContentList, setVeriContentList] = useState<contentItem[]>([]);
+    const [contentText, setContentText] = useState("");
     const [veriMethodList, setVeriMethodList] = useState<methodItem[]>([]);
+    const [methodText, setMethodText] = useState("");
+    const [rainVeriTypeList, setRainVeriTypeList] = useState<optionItem[]>([]);
+    const [analyseType, setAnalyseType] = useState(2);
     const [aoiList, setAoiList] = useState<aoiItem[]>([]);
-    const [obsList, setObsList] = useState<obsItem[]>([]);
-    const [productList, setProductList] = useState<obsItem[]>([]);
-    const [areaList, setAreaList] = useState<obsItem[]>([]);
-    const [forcastHourList, setForcastHourList] = useState<obsItem[]>([]);
+    const [obsList, setObsList] = useState<normalOptionItem[]>([]);
+    const [productList, setProductList] = useState<modelOptionItem[]>([]);
+    const [areaList, setAreaList] = useState<normalOptionItem[]>([]);
+    const [forcastHourDetailList, setForcastHourDetailList] = useState<optionItem[]>([]);
+    const [forcastHourList, setForcastHourList] = useState<normalOptionItem[]>([]);
     const [echartsData, setEchartsData] = useState<regionResultItem[]>([]);
-    const [basicData, setBasicData] = useState({
-        models: [] as string[]
+    const [basicData, setBasicData] = useState<basicData>({
+        models: [],
+        analyseType: 2,
+        title: "",
+        type: "bar"
     });
+    const areaVeriType = getFieldValue("veriType");
+    const [exportTableData, setExportTableData] = useState({});
     useEffect(() => {
-        // const getAllModelList = async () => {
-        //     try {
-        //         const res = await apis.getModelList();
-        //         console.log("modelList======================", res);
-        //         setAllModelList(res);
-        //     } catch (e) {
-        //         console.log(e);
-        //     }
-        // };
         const fetchConfig = async () => {
             try {
                 const response = await apis.getModelList();
-                console.log("modelList======================", response);
                 setAllModelList(response);
+                const obsResponse = await apis.getObsConfigList();
+                setAllObsList(obsResponse);
                 const res = await apis.getVeriConfigParamsByFuncKey({ keyName: "REGION" });
                 console.log("区域检验的检验参数", res.REGION);
                 const data = res.REGION;
@@ -95,28 +112,108 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                     setVeriMethodList(currentContent.moc.contents);
                     const firstMethod = currentContent.moc.contents[0];
                     setCurrentMethodValue(firstMethod.value);
+                    setMethodText(firstMethod.des);
+                    if (firstMethod.ins_type && firstMethod.ins_type === "Y") {
+                        setRainVeriTypeList([
+                            { label: "累加检验", value: 1 },
+                            { label: "分级检验", value: 0 }
+                        ]);
+                        setAnalyseType(1);
+                    } else {
+                        setRainVeriTypeList([]);
+                        setAnalyseType(2);
+                    }
                 }
-                getObsList(firstContent);
-                getProductList(firstContent);
-                getForcastHour(firstContent);
+                const list1 = firstContent.obs_array.split(",").map((item) => {
+                    const obs = obsResponse.find((obsItem) => obsItem.obsKey === item) as obsListItem;
+                    return {
+                        label: obs.obsName,
+                        value: item
+                    };
+                });
+                setObsList(list1);
+                const list2 = firstContent.model_array.split(",").map((item) => {
+                    const model = response.find((model) => model.modelKey === item) as modelListItem;
+                    return {
+                        forcastHour: model.forcastHour ? model.forcastHour.split(",") : [],
+                        label: model.modelName,
+                        value: item
+                    };
+                });
+                setProductList(list2);
+                const list4 = list2.reduce((total, item) => {
+                    const list = item.forcastHour.map((element) => {
+                        return { label: `${element}H`, value: +element };
+                    });
+                    return [...total, ...list];
+                }, [] as optionItem[]);
+                setForcastHourDetailList(list4);
+                const list3 = firstContent.forcastHour.split(",").map((item) => {
+                    return {
+                        label: item,
+                        value: item
+                    };
+                });
+                setForcastHourList(list3);
+                setInitialized(true);
             } catch (e) {
                 console.log("error", e);
             }
         };
-        // getAllModelList();
         fetchConfig(); // 调用获取数据的函数
     }, []);
-    const onFinish = () => {};
+    /**加载完数据后初始化部分参数 */
+    useEffect(() => {
+        if (initialized) {
+            if (forcastHourList.length) {
+                const has = forcastHourList.some((item) => item.value === getFieldValue("forcastHour"));
+                if (!has) {
+                    setFieldValue("forcastHour", forcastHourList[0].value);
+                }
+            }
+            if (allObsList.length && obsList.length) {
+                const has = allObsList.some((item) => item.obsKey === "HTB");
+                if (has) {
+                    form.setFieldValue("obsName", ["HTB"]);
+                }
+            }
+            if (allModelList.length && productList.length) {
+                const has = allModelList.some((item) => item.modelKey === "EC");
+                if (has) {
+                    form.setFieldValue("models", ["EC"]);
+                    getRegionListByModels(["EC"]).then((list) => {
+                        console.log("list===>>>>>>>", list);
+                        if (list && list.length) {
+                            form.setFieldValue("regionId", 1001);
+                        }
+                    });
+                }
+            }
+            setInitialized(false);
+        }
+    }, [
+        initialized,
+        forcastHourList,
+        getFieldValue,
+        setFieldValue,
+        allObsList,
+        obsList,
+        form,
+        allModelList,
+        productList,
+        areaList
+    ]);
     /**检验查询 */
     const handleSearchResult = async (values: any) => {
         console.log("Success:", values);
         const { startTime, endTime, models, time, obsName, regionId } = values;
         const veriType = getFieldValue("veriType");
-        // const forcastHour = getFieldValue("forcastHour");
         try {
+            const time1 = dayjs(startTime).format("YYYY-MM-DD");
+            const time2 = dayjs(endTime).format("YYYY-MM-DD");
             const data = {
-                startTime: dayjs(startTime).format("YYYY-MM-DD"),
-                endTime: dayjs(endTime).format("YYYY-MM-DD"),
+                startTime: time1,
+                endTime: time2,
                 aoi: currentElem,
                 moc: currentMethodValue,
                 time: time.join(","),
@@ -126,12 +223,19 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                 pressType: "SURF",
                 pressValue: "0",
                 regionId: regionId,
-                // titleName: "示例：四川省2022-07-08~2022-07-10 24H时次间隔 气温平均误差",
-                veriType: veriType
+                titleName: `${time1}～${time2} ${time.join(
+                    "+"
+                )}时次 ${gap}H预报 ${contentText} ${methodText}（单位：°C）`,
+                veriType: veriType,
+                analyseType: analyseType
             };
             const res = await apis.getRegionVeriResult(data);
             console.log(res);
+            setExportTableData(data);
             setBasicData({
+                ...basicData,
+                title: data.titleName,
+                analyseType,
                 models: models
             });
             setEchartsData(res);
@@ -142,8 +246,9 @@ export default function AreaVerificationModal({ open, onClose }: props) {
     /**获取实况列表 */
     const getObsList = (content: contentItem) => {
         const list = content.obs_array.split(",").map((item) => {
+            const obs = allObsList.find((obsItem) => obsItem.obsKey === item) as obsListItem;
             return {
-                label: item,
+                label: obs.obsName,
                 value: item
             };
         });
@@ -154,16 +259,23 @@ export default function AreaVerificationModal({ open, onClose }: props) {
         const list = content.model_array.split(",").map((item) => {
             const model = allModelList.find((model) => model.modelKey === item) as modelListItem;
             return {
-                label: model.modelKey,
+                forcastHour: model.forcastHour ? model.forcastHour.split(",") : [],
+                label: model.modelName,
                 value: item
             };
         });
         setProductList(list);
     };
     /**选择检验内容 */
-    const handleSelectContent = (elem: string) => {
-        setCurrentElem(elem);
-        const currentContent = aoiList.find((item) => item.aoi.contents.some((element) => element.elem === elem));
+    const handleSelectContent = (content: contentItem) => {
+        getProductList(content);
+        getObsList(content);
+        getForcastHour(content);
+        setCurrentElem(content.elem);
+        setContentText(content.des);
+        const currentContent = aoiList.find((item) =>
+            item.aoi.contents.some((element) => element.elem === content.elem)
+        );
         if (currentContent) {
             setVeriMethodList(currentContent.moc.contents);
             const currentMethod = currentContent.moc.contents.find((element) => element.value === currentMethodValue);
@@ -171,11 +283,33 @@ export default function AreaVerificationModal({ open, onClose }: props) {
             if (!currentMethod) {
                 const firstMethod = currentContent.moc.contents[0];
                 setCurrentMethodValue(firstMethod.value);
+                setMethodText(firstMethod.des);
+                getRainVeriTypeList(firstMethod);
+            } else {
+                getRainVeriTypeList(currentMethod);
             }
+        }
+    };
+    /**降水分级还是累加 */
+    const getRainVeriTypeList = (method: methodItem) => {
+        if (method.ins_type && method.ins_type === "Y") {
+            setRainVeriTypeList([
+                { label: "累加检验", value: 1 },
+                { label: "分级检验", value: 0 }
+            ]);
+            if (analyseType !== 2) {
+                setAnalyseType(analyseType);
+            } else {
+                setAnalyseType(1);
+            }
+        } else {
+            setRainVeriTypeList([]);
+            setAnalyseType(2);
         }
     };
     /**获取时效间隔 */
     const getForcastHour = (content: contentItem) => {
+        console.log("处理时效间隔");
         const list = content.forcastHour.split(",").map((item) => {
             return {
                 label: item,
@@ -183,6 +317,10 @@ export default function AreaVerificationModal({ open, onClose }: props) {
             };
         });
         setForcastHourList(list);
+        const has = list.some((item) => item.value === getFieldValue("forcastHour"));
+        if (!has) {
+            setFieldValue("forcastHour", list[0].value);
+        }
     };
     const handleDeselect = (value: string) => {
         console.log(`Tag "${value}" has been deselected.`);
@@ -198,8 +336,9 @@ export default function AreaVerificationModal({ open, onClose }: props) {
     };
     /**关闭模式下拉框查询区域 */
     const handleDropdownVisibleChange = (open: boolean) => {
+        setDropdownOpen(open);
         if (!open) {
-            console.log("关闭下拉框是");
+            console.log("关闭下拉框时");
             const models = form.getFieldValue("models");
             if (models.length) {
                 getRegionListByModels(models);
@@ -211,23 +350,22 @@ export default function AreaVerificationModal({ open, onClose }: props) {
         try {
             const res = await apis.getRegionListByModels({ models: models.join(",") });
             console.log("区域列表===>>>>>", res);
-            setAreaList(
-                res.fixedRegionInfo.map((item) => {
-                    return {
-                        label: item.regionName,
-                        value: item.regionId
-                    };
-                })
-            );
+            const list = res.fixedRegionInfo.map((item) => {
+                return {
+                    label: item.regionName,
+                    value: item.regionId
+                };
+            });
+            setAreaList(list);
+            return list;
         } catch (e) {
             console.log(e);
         }
     };
-    const handleSelectMethod = (value: string) => {
-        setCurrentMethodValue(value);
-    };
-    const handleCancel = () => {
-        onClose();
+    const handleSelectMethod = (method: methodItem) => {
+        setCurrentMethodValue(method.value);
+        getRainVeriTypeList(method);
+        setMethodText(method.des);
     };
     /**改变区域 */
     const handleChangeArea = () => {
@@ -237,10 +375,48 @@ export default function AreaVerificationModal({ open, onClose }: props) {
     const handleChangeGap = (value: number) => {
         setGap(value);
     };
+    /**下载图片 */
+    const handleDownloadPicture = () => {
+        const html = document.getElementById("chartBox") as HTMLElement;
+        console.log(html.offsetWidth, html.offsetHeight);
+        html2canvas(html, {
+            ignoreElements: (element: Element) => {
+                if (element.id === "chartsBtnTop" || element.id === "ts-btn-list") {
+                    return true;
+                }
+                return false;
+            },
+            width: html.offsetWidth,
+            height: html.offsetHeight
+        }).then((canvas) => {
+            const a = document.createElement("a");
+            a.href = canvas.toDataURL();
+            a.setAttribute("download", `${basicData.title}.jpeg`);
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+    };
+    /**切换echarts类型 */
+    const handleSwitchEchartType = (type: string) => {
+        setBasicData({
+            ...basicData,
+            type: type
+        });
+    };
+    /**导出表格 */
+    const handleDownloadTable = async () => {
+        try {
+            const res = await apis.regionVeriResultExport(exportTableData);
+            downLoadFile(res);
+        } catch (e) {
+            console.log(e);
+        }
+    };
     return (
         <Modal
             width={1280}
-            title={<ModalHeader title="区域检验" onClose={handleCancel} />}
+            title={<ModalHeader title="区域检验" onClose={() => onClose()} />}
             closeIcon={false}
             centered
             open={open}
@@ -252,7 +428,7 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                     <div className={style.content}>
                         {veriContentList.map((item) => (
                             <Button
-                                onClick={() => handleSelectContent(item.elem)}
+                                onClick={() => handleSelectContent(item)}
                                 className={`${style.button} ${item.elem === currentElem ? style.active : ""}`}
                                 key={item.elem}
                                 type="primary"
@@ -265,7 +441,7 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                     <div className={style.content}>
                         {veriMethodList.map((item) => (
                             <Button
-                                onClick={() => handleSelectMethod(item.value)}
+                                onClick={() => handleSelectMethod(item)}
                                 className={`${style.button} ${item.value === currentMethodValue ? style.active : ""}`}
                                 key={item.value}
                                 type="primary"
@@ -274,6 +450,23 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                             </Button>
                         ))}
                     </div>
+                    {rainVeriTypeList.length > 0 && (
+                        <>
+                            <div className={style.head}>检验类型</div>
+                            <div className={style.content}>
+                                {rainVeriTypeList.map((item) => (
+                                    <Button
+                                        onClick={() => setAnalyseType(item.value)}
+                                        className={`${style.button} ${item.value === analyseType ? style.active : ""}`}
+                                        key={item.value}
+                                        type="primary"
+                                    >
+                                        {item.label}
+                                    </Button>
+                                ))}
+                            </div>
+                        </>
+                    )}
                 </div>
                 <div className={style.container}>
                     <div className={`${style.searchBasic} areaForm`}>
@@ -305,6 +498,7 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                                 <Select
                                     mode="multiple"
                                     showSearch={false}
+                                    maxTagCount="responsive"
                                     allowClear
                                     style={{ minWidth: "310px" }}
                                     placeholder="请选择实况"
@@ -360,9 +554,12 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                         <Form
                             layout="inline"
                             colon={false}
-                            onFinish={onFinish}
                             form={form2}
-                            initialValues={{ layout: "inline", veriType: "ZR", forcastHour: null }}
+                            initialValues={{
+                                layout: "inline",
+                                veriType: "ZR",
+                                forcastHour: forcastHourList.length ? forcastHourList[0].value : null
+                            }}
                         >
                             <Form.Item label="评分" name="veriType">
                                 <Radio.Group className="form-group-box">
@@ -381,37 +578,47 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                                     options={forcastHourList}
                                 />
                             </Form.Item>
-                        </Form>
-                        <div className={style.gapList}>
-                            <div className={style.gapButton}>
-                                <img src={icon_back} alt="" />
-                                <img src={icon_back} alt="" />
-                            </div>
-                            <div className={style.gapButton}>
-                                <img src={icon_back} alt="" />
-                            </div>
-                            <div className={style.gapContainer}>
-                                {gapList.map((item) => (
-                                    <div
-                                        className={`${style.gapItem} ${gap === item.value ? style.gapItemActive : ""}`}
-                                        key={item.value}
-                                        onClick={() => handleChangeGap(item.value)}
-                                    >
-                                        {item.label}
+
+                            {areaVeriType === "ZR" && (
+                                <div className={style.gapList}>
+                                    <div className={style.gapButton}>
+                                        <img src={icon_back} alt="" />
+                                        <img src={icon_back} alt="" />
                                     </div>
-                                ))}
-                            </div>
-                            <div className={`${style.gapButton} ${style.foword}`}>
-                                <img src={icon_back} alt="" />
-                            </div>
-                            <div className={`${style.gapButton} ${style.foword}`}>
-                                <img src={icon_back} alt="" />
-                                <img src={icon_back} alt="" />
-                            </div>
-                        </div>
+                                    <div className={style.gapButton}>
+                                        <img src={icon_back} alt="" />
+                                    </div>
+                                    <div className={style.gapContainer}>
+                                        {forcastHourDetailList.slice(0, 8).map((item) => (
+                                            <div
+                                                className={`${style.gapItem} ${
+                                                    gap === item.value ? style.gapItemActive : ""
+                                                }`}
+                                                key={item.value}
+                                                onClick={() => handleChangeGap(item.value)}
+                                            >
+                                                {item.label}
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className={`${style.gapButton} ${style.foword}`}>
+                                        <img src={icon_back} alt="" />
+                                    </div>
+                                    <div className={`${style.gapButton} ${style.foword}`}>
+                                        <img src={icon_back} alt="" />
+                                        <img src={icon_back} alt="" />
+                                    </div>
+                                </div>
+                            )}
+                        </Form>
                     </div>
                     <div className={style.echartButton}>
-                        <OperateButton></OperateButton>
+                        <OperateButton
+                            onClickDownloadPicture={handleDownloadPicture}
+                            onClickDownloadTable={handleDownloadTable}
+                            onClickSwitchEchartType={handleSwitchEchartType}
+                            type={basicData.type}
+                        ></OperateButton>
                     </div>
                     <div className={style.echartContainer}>
                         <EchartComponent basicData={basicData} echartsData={echartsData}></EchartComponent>

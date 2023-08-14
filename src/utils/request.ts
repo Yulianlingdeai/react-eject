@@ -15,6 +15,9 @@ request.interceptors.request.use(
 
 request.interceptors.response.use(
     (response) => {
+        if (response.headers["content-type"].includes("application/octet-stream")) {
+            return response;
+        }
         const { code, data } = response.data;
         if (code && +code === 200) {
             return data;

@@ -18,7 +18,7 @@ import icon_visibility from "../../assets/image/icon_visibility.png";
 import icon_low_cloud_cover from "../../assets/image/icon_low_cloud_cover.png";
 import icon_low_clouds_high from "../../assets/image/icon_low_clouds_high.png";
 
-import OperateButton from "../OperateButton";
+// import OperateButton from "../OperateButton";
 
 type props = { open: boolean; onClose: () => void };
 // const { RangePicker } = DatePicker;
@@ -164,7 +164,7 @@ export default function AirportVerificationModal({ open, onClose }: props) {
                     </Radio.Group>
                 </div>
                 <div className={style.mainRight}>
-                    <OperateButton></OperateButton>
+                    {/* <OperateButton></OperateButton> */}
                     <div className={style.echarts}>{/* <EchartComponent visible={open}></EchartComponent> */}</div>
                 </div>
             </div>
