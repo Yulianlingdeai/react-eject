@@ -7,9 +7,10 @@ import style from "./index.module.css";
 import ModalHeader from "../ModalHeader";
 import OperateButton from "../OperateButton";
 import EchartComponent from "../EchartComponent";
+import TimeIntervalRadio from "../TimeIntervalRadio";
 import { downLoadFile } from "../../utils";
 const CheckboxGroup = Checkbox.Group;
-import icon_back from "../../assets/image/icon_back.svg";
+// import icon_back from "../../assets/image/icon_back.svg";
 import apis from "../../apis";
 import type {
     configKeys,
@@ -21,6 +22,7 @@ import type {
     obsListItem,
     basicData
 } from "../../typings";
+import type { RadioChangeEvent } from "antd";
 
 type props = { open: boolean; onClose: () => void; showCustomArea?: () => void };
 type normalOptionItem = { label: string; value: string | number };
@@ -34,16 +36,6 @@ const scoreTypeList = [
     { label: "逐日评分", value: "ZR" },
     { label: "综合评分", value: "ZH" }
 ];
-// const gapList = [
-//     { label: "24H", value: 24 },
-//     { label: "48H", value: 48 },
-//     { label: "72H", value: 72 },
-//     { label: "96H", value: 96 },
-//     { label: "120H", value: 120 },
-//     { label: "144H", value: 144 },
-//     { label: "168H", value: 168 },
-//     { label: "192H", value: 192 }
-// ];
 const buttonThemeConfig = {
     colorPrimary: "#cc8f21",
     algorithm: true
@@ -53,6 +45,7 @@ export default function AreaVerificationModal({ open, onClose }: props) {
     const [form2] = Form.useForm();
     // getFieldDecorator
     const { getFieldValue, setFieldValue } = form2;
+    const [areaVeriType, setAreaVeriType] = useState("");
     const [allModelList, setAllModelList] = useState<modelListItem[]>([]);
     const [allObsList, setAllObsList] = useState<obsListItem[]>([]);
     const [initialized, setInitialized] = useState(false);
@@ -60,7 +53,7 @@ export default function AreaVerificationModal({ open, onClose }: props) {
     const [isDropdownOpen, setDropdownOpen] = useState(false);
     const [currentElem, setCurrentElem] = useState("");
     const [currentMethodValue, setCurrentMethodValue] = useState("");
-    const [gap, setGap] = useState(24);
+    const [gap, setGap] = useState(0);
     const [veriContentList, setVeriContentList] = useState<contentItem[]>([]);
     const [contentText, setContentText] = useState("");
     const [veriMethodList, setVeriMethodList] = useState<methodItem[]>([]);
@@ -80,7 +73,7 @@ export default function AreaVerificationModal({ open, onClose }: props) {
         title: "",
         type: "bar"
     });
-    const areaVeriType = getFieldValue("veriType");
+    const [position, setPosition] = useState<number[]>([0, 8]);
     const [exportTableData, setExportTableData] = useState({});
     useEffect(() => {
         const fetchConfig = async () => {
@@ -141,13 +134,6 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                     };
                 });
                 setProductList(list2);
-                const list4 = list2.reduce((total, item) => {
-                    const list = item.forcastHour.map((element) => {
-                        return { label: `${element}H`, value: +element };
-                    });
-                    return [...total, ...list];
-                }, [] as optionItem[]);
-                setForcastHourDetailList(list4);
                 const list3 = firstContent.forcastHour.split(",").map((item) => {
                     return {
                         label: item,
@@ -162,14 +148,28 @@ export default function AreaVerificationModal({ open, onClose }: props) {
         };
         fetchConfig(); // 调用获取数据的函数
     }, []);
+    useEffect(() => {
+        setAreaVeriType(form2.getFieldValue("veriType"));
+    }, [form2]);
     /**加载完数据后初始化部分参数 */
     useEffect(() => {
         if (initialized) {
+            let defaultHour = 0;
+            //  && forcastHourDetailList.length
             if (forcastHourList.length) {
-                const has = forcastHourList.some((item) => item.value === getFieldValue("forcastHour"));
+                const currentForcastHour = getFieldValue("forcastHour");
+                const has = forcastHourList.some((item) => item.value === currentForcastHour);
                 if (!has) {
                     setFieldValue("forcastHour", forcastHourList[0].value);
+                    console.log("forcastHourList[0].value===============", forcastHourList[0].value);
                 }
+                defaultHour = has ? currentForcastHour : forcastHourList[0].value;
+                console.log("defaultHour", defaultHour);
+                // const list = forcastHourDetailList.filter((item) =>
+                //     has ? item.value % currentForcastHour === 0 : item.value % +forcastHourList[0].value === 0
+                // );
+                // console.log("list===========", list);
+                // setForcastHourDetailList(list);
             }
             if (allObsList.length && obsList.length) {
                 const has = allObsList.some((item) => item.obsKey === "HTB");
@@ -188,6 +188,18 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                         }
                     });
                 }
+                const currentProductList = productList.filter((item) => item.value === "EC");
+                const list4 = currentProductList
+                    .reduce((total, item) => {
+                        const list = item.forcastHour.filter((element) => !total.includes(element));
+                        return [...total, ...list];
+                    }, [] as string[])
+                    .sort((a, b) => +a - +b)
+                    .map((item) => {
+                        return { label: `${item}H`, value: +item };
+                    });
+                const list = list4.filter((item) => item.value % defaultHour === 0);
+                setForcastHourDetailList(list);
             }
             setInitialized(false);
         }
@@ -321,6 +333,21 @@ export default function AreaVerificationModal({ open, onClose }: props) {
         if (!has) {
             setFieldValue("forcastHour", list[0].value);
         }
+        const currentHour = has ? getFieldValue("forcastHour") : list[0].value;
+        const models = form.getFieldValue("models");
+        const currentProductList = productList.filter((item) => models.includes(item.value as string));
+        const list4 = currentProductList
+            .reduce((total, item) => {
+                const list = item.forcastHour.filter((element) => !total.includes(element));
+                return [...total, ...list];
+            }, [] as string[])
+            .sort((a, b) => +a - +b)
+            .map((item) => {
+                return { label: `${item}H`, value: +item };
+            });
+        const list1 = list4.filter((item) => item.value % +currentHour === 0);
+        console.log("重新计算了hours");
+        setForcastHourDetailList(list1);
     };
     const handleDeselect = (value: string) => {
         console.log(`Tag "${value}" has been deselected.`);
@@ -331,6 +358,7 @@ export default function AreaVerificationModal({ open, onClose }: props) {
             console.log("收到关闭===》》》", models, option);
             if (models.length) {
                 getRegionListByModels(models);
+                computedHourList(models);
             }
         }
     };
@@ -342,8 +370,25 @@ export default function AreaVerificationModal({ open, onClose }: props) {
             const models = form.getFieldValue("models");
             if (models.length) {
                 getRegionListByModels(models);
+                computedHourList(models);
             }
         }
+    };
+    const computedHourList = (models: string[]) => {
+        const defaultHour = getFieldValue("forcastHour");
+        const currentProductList = productList.filter((item) => models.includes(item.value as string));
+        const list4 = currentProductList
+            .reduce((total, item) => {
+                const list = item.forcastHour.filter((element) => !total.includes(element));
+                return [...total, ...list];
+            }, [] as string[])
+            .sort((a, b) => +a - +b)
+            .map((item) => {
+                return { label: `${item}H`, value: +item };
+            });
+        const list = list4.filter((item) => item.value % defaultHour === 0);
+        console.log("重新计算了hours");
+        setForcastHourDetailList(list);
     };
     /**根据选择模式（产品）查询区域 */
     const getRegionListByModels = async (models: string[]) => {
@@ -362,6 +407,22 @@ export default function AreaVerificationModal({ open, onClose }: props) {
             console.log(e);
         }
     };
+    const handleChangeForcastHour = (value: string) => {
+        const models = form.getFieldValue("models");
+        const currentProductList = productList.filter((item) => models.includes(item.value as string));
+        const list4 = currentProductList
+            .reduce((total, item) => {
+                const list = item.forcastHour.filter((element) => !total.includes(element));
+                return [...total, ...list];
+            }, [] as string[])
+            .sort((a, b) => +a - +b)
+            .map((item) => {
+                return { label: `${item}H`, value: +item };
+            });
+        const list = list4.filter((item) => item.value % +value === 0);
+        console.log("重新计算了hours");
+        setForcastHourDetailList(list);
+    };
     const handleSelectMethod = (method: methodItem) => {
         setCurrentMethodValue(method.value);
         getRainVeriTypeList(method);
@@ -371,7 +432,56 @@ export default function AreaVerificationModal({ open, onClose }: props) {
     const handleChangeArea = () => {
         // showCustomArea();
     };
-
+    const handleChangeVeriType = (e: RadioChangeEvent) => {
+        console.log("radio checked", e.target.value);
+        setAreaVeriType(e.target.value);
+    };
+    const handleChangePosition = (step: number) => {
+        const index = forcastHourDetailList.slice(...position).findIndex((item) => item.value === gap);
+        if (step === 1) {
+            console.log(index);
+            if (index > -1 && index < 7) {
+                setGap(forcastHourDetailList.slice(...position)[index + 1].value);
+            } else if (position[1] === forcastHourDetailList.length) {
+                return;
+            } else {
+                const newPosition = [position[0] + 1, position[1] + 1];
+                setPosition(newPosition);
+                setGap(forcastHourDetailList.slice(...newPosition)[7].value);
+            }
+        } else if (step === -1) {
+            console.log(index);
+            if (index > 0) {
+                setGap(forcastHourDetailList.slice(...position)[index - 1].value);
+            } else if (position[0] === 0) {
+                return;
+            } else {
+                const newPosition = [position[0] - 1, position[1] - 1];
+                setPosition(newPosition);
+                setGap(forcastHourDetailList.slice(...newPosition)[0].value);
+            }
+        } else if (step === 2) {
+            if (position[1] + 8 > forcastHourDetailList.length) {
+                const newPosition = [forcastHourDetailList.length - 8, forcastHourDetailList.length];
+                setPosition(newPosition);
+                setGap(forcastHourDetailList.slice(...newPosition)[index].value);
+            } else if (index > -1 && index <= 7) {
+                const newPosition = [position[0] + 8, position[1] + 8];
+                setPosition(newPosition);
+                setGap(forcastHourDetailList.slice(...newPosition)[index].value);
+            }
+        } else if (step === -2) {
+            if (position[0] - 8 < 0) {
+                const newPosition = [0, 8];
+                setPosition(newPosition);
+                setGap(forcastHourDetailList.slice(...newPosition)[index].value);
+            } else if (index > -1 && index <= 7) {
+                const newPosition = [position[0] - 8, position[1] - 8];
+                setPosition(newPosition);
+                setGap(forcastHourDetailList.slice(...newPosition)[index].value);
+            }
+        }
+    };
     const handleChangeGap = (value: number) => {
         setGap(value);
     };
@@ -555,14 +665,15 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                             layout="inline"
                             colon={false}
                             form={form2}
+                            onFinish={() => {}}
                             initialValues={{
                                 layout: "inline",
                                 veriType: "ZR",
-                                forcastHour: forcastHourList.length ? forcastHourList[0].value : null
+                                forcastHour: null
                             }}
                         >
                             <Form.Item label="评分" name="veriType">
-                                <Radio.Group className="form-group-box">
+                                <Radio.Group className="form-group-box" onChange={handleChangeVeriType}>
                                     {scoreTypeList.map((item) => (
                                         <Radio key={item.value} value={item.value}>
                                             {item.label}
@@ -576,10 +687,20 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                                     style={{ width: "100px" }}
                                     placeholder="请选择间隔"
                                     options={forcastHourList}
+                                    onChange={handleChangeForcastHour}
                                 />
                             </Form.Item>
-
                             {areaVeriType === "ZR" && (
+                                <TimeIntervalRadio
+                                    timeIntervalList={forcastHourDetailList}
+                                    position={position}
+                                    onChangePosition={handleChangePosition}
+                                    gap={gap}
+                                    onChangeGap={handleChangeGap}
+                                ></TimeIntervalRadio>
+                            )}
+
+                            {/* {areaVeriType === "ZR" && (
                                 <div className={style.gapList}>
                                     <div className={style.gapButton}>
                                         <img src={icon_back} alt="" />
@@ -609,7 +730,7 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                                         <img src={icon_back} alt="" />
                                     </div>
                                 </div>
-                            )}
+                            )} */}
                         </Form>
                     </div>
                     <div className={style.echartButton}>

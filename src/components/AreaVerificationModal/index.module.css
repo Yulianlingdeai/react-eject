@@ -74,7 +74,7 @@
     padding: 20px;
     border-bottom: 1px solid #d8d8d8;
 }
-.gapList {
+/* .gapList {
     display: flex;
 }
 .gapButton {
@@ -103,7 +103,6 @@
     width: 48px;
     height: 25px;
     border-radius: 20px;
-    /* background: #4daef2; */
     font-size: 16px;
     font-weight: bold;
     color: rgba(0, 0, 0, 0.6);
@@ -120,7 +119,7 @@
     width: 5px;
     height: 10px;
     transform: rotate(180deg);
-}
+} */
 .echartTop {
     display: flex;
     width: 100%;
