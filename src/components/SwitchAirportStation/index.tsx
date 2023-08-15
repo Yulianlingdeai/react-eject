@@ -61,7 +61,7 @@ export default function SwitchAirportStation({ className }: { className?: string
                         </Button>
                         <Button type="primary" style={{ background: "#3F4D60" }} className={style.container}>
                             <img src={icon_ariport} alt="" />
-                            <span className={style.buttonText}>明航机场</span>
+                            <span className={style.buttonText}>民航机场</span>
                         </Button>
                         <div className={style.closeIcon} onClick={handleClosePopover}>
                             <img src={icon_close} alt="" />

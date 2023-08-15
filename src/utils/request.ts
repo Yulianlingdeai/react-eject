@@ -1,7 +1,10 @@
 import axios from "axios";
 
+const res = await axios.get("/config.json");
+
 const request = axios.create({
-    baseURL: process.env.REACT_APP_BASE_API,
+    // baseURL: process.env.REACT_APP_BASE_API,
+    baseURL: res.data.BASE_URL,
     timeout: 20000
 });
 

@@ -1,0 +1,82 @@
+{
+    "time": {
+        "desc": "检验起报时次",
+        "values": [
+            {
+                "key": "08",
+                "value": 8
+            },
+            {
+                "key": "20",
+                "value": 20
+            }
+        ]
+    },
+    "timeInterval": {
+        "desc": "检验时间间隔",
+        "values": [
+            {
+                "key": "1H",
+                "value": 1
+            },
+            {
+                "key": "3H",
+                "value": 3
+            },
+            {
+                "key": "6H",
+                "value": 6
+            },
+            {
+                "key": "12H",
+                "value": 12
+            },
+            {
+                "key": "24H",
+                "value": 24
+            }
+        ]
+    },
+    "forcastHour": {
+        "desc": "检验预报时效",
+        "values": [
+            {
+                "key": "24H",
+                "value": 24
+            },
+            {
+                "key": "48H",
+                "value": 48
+            },
+            {
+                "key": "72H",
+                "value": 72
+            },
+            {
+                "key": "96H",
+                "value": 96
+            },
+            {
+                "key": "120H",
+                "value": 120
+            }
+        ]
+    },
+    "duration": {
+        "desc": "检验时长",
+        "values": [
+            {
+                "key": "过去1天",
+                "value": 1
+            },
+            {
+                "key": "过去2天",
+                "value": 2
+            },
+            {
+                "key": "过去3天",
+                "value": 3
+            }
+        ]
+    }
+}
