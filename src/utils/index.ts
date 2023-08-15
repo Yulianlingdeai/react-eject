@@ -20,3 +20,10 @@ export function downLoadFile(res: any) {
     document.body.removeChild(a);
     window.URL.revokeObjectURL(url);
 }
+
+/**
+ * 处理异常数据
+ */
+export function handleAbnormalData(data: any) {
+    return data === 999999 || data === "" || data == null || data === "NaN" ? NaN : Number(data);
+}

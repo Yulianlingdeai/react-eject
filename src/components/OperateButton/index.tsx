@@ -21,7 +21,7 @@ export default function OperateButton({
     onClickDownloadPicture
 }: props) {
     const handleSwitchEchartType = () => {
-        onClickSwitchEchartType(type === "line" ? "bar" : "line");
+        onClickSwitchEchartType(type === "bar" ? "line" : type === "line" ? "table" : "bar");
     };
     return (
         <div className={style.echartTop}>

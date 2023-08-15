@@ -80,4 +80,6 @@ export type basicData = {
     analyseType: number;
     title: string;
     type: string;
+    veriType: "ZR" | "ZH";
+    rain: boolean;
 };
