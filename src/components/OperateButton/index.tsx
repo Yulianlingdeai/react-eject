@@ -72,7 +72,9 @@ export default function OperateButton({
                 <Button onClick={handleSwitchEchartType} className={`${style.button} ${style.switch}`} type="primary">
                     <img src={type === "line" ? icon_switch_echart : icon_line} alt="" />
                     {type !== "line" && <img className={style.lineInner} src={icon_line_inner} alt="" />}
-                    <span className={style.buttonText}>{type === "line" ? "切换柱状图" : "切换曲线图"}</span>
+                    <span className={style.buttonText}>
+                        {type === "line" ? "切换表格" : type === "table" ? "切换柱状图" : "切换曲线图"}
+                    </span>
                 </Button>
             </ConfigProvider>
         </div>

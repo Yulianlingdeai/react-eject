@@ -83,3 +83,19 @@ export type basicData = {
     veriType: "ZR" | "ZH";
     rain: boolean;
 };
+
+export type modelInfo = {
+    latestInitTime: string;
+    modelKey: string; // "EC";
+    modelName: string; // "欧洲细网格";
+    modelForcastHourList: string[];
+};
+
+export type stationItem = {
+    lat: number; // 36.6833;
+    lon: number; // 101.25;
+    stationId: string; // "52855";
+    stationName: string; // "湟源";
+    stationType: string; // "mhjcz";
+    value: number; // 4.98;
+};

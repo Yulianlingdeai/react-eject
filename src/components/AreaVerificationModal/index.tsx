@@ -40,6 +40,21 @@ const buttonThemeConfig = {
     colorPrimary: "#cc8f21",
     algorithm: true
 };
+type unitItem = {
+    type: string;
+    unit: string;
+    noUnit?: string;
+};
+const unitList: unitItem[] = [
+    { type: "AT", unit: "℃" },
+    { type: "WD", unit: "°" },
+    { type: "WS", unit: "m/s" },
+    { type: "RAIN12", unit: "%", noUnit: "ts" },
+    { type: "RAIN24", unit: "%", noUnit: "ts" },
+    { type: "VIS", unit: "km" },
+    { type: "LN", unit: "成" },
+    { type: "LH", unit: "m" }
+];
 export default function AreaVerificationModal({ open, onClose }: props) {
     const [form] = Form.useForm();
     const [form2] = Form.useForm();
@@ -87,7 +102,7 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                 const obsResponse = await apis.getObsConfigList();
                 setAllObsList(obsResponse);
                 const res = await apis.getVeriConfigParamsByFuncKey({ keyName: "REGION" });
-                console.log("区域检验的检验参数", res.REGION);
+                // console.log("区域检验的检验参数", res.REGION);
                 const data = res.REGION;
                 delete data.des;
                 const sortList = Object.keys(data)
@@ -167,10 +182,10 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                 const has = forcastHourList.some((item) => item.value === currentForcastHour);
                 if (!has) {
                     setFieldValue("forcastHour", forcastHourList[0].value);
-                    console.log("forcastHourList[0].value===============", forcastHourList[0].value);
+                    // console.log("forcastHourList[0].value===============", forcastHourList[0].value);
                 }
                 defaultHour = has ? currentForcastHour : forcastHourList[0].value;
-                console.log("defaultHour", defaultHour);
+                // console.log("defaultHour", defaultHour);
             }
             if (allObsList.length && obsList.length) {
                 const has = allObsList.some((item) => item.obsKey === "HTB");
@@ -183,7 +198,7 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                 if (has) {
                     form.setFieldValue("models", ["EC"]);
                     getRegionListByModels(["EC"]).then((list) => {
-                        console.log("list===>>>>>>>", list);
+                        // console.log("list===>>>>>>>", list);
                         if (list && list.length) {
                             form.setFieldValue("regionId", 1001);
                         }
@@ -223,12 +238,13 @@ export default function AreaVerificationModal({ open, onClose }: props) {
     ]);
     /**检验查询 */
     const handleSearchResult = async (values: any) => {
-        console.log("Success:", values);
+        // console.log("Success:", values);
         const { startTime, endTime, models, time, obsName, regionId } = values;
         const veriType = getFieldValue("veriType");
         try {
             const time1 = dayjs(startTime).format("YYYY-MM-DD");
             const time2 = dayjs(endTime).format("YYYY-MM-DD");
+            const unitItem = unitList.find((item) => item.type === currentElem) as unitItem;
             const data = {
                 startTime: time1,
                 endTime: time2,
@@ -244,12 +260,16 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                 regionId: regionId,
                 titleName: `${time1}～${time2} ${time.join(
                     "+"
-                )}时次 ${currentTimeInterval}H预报 ${contentText} ${methodText}（单位：°C）`,
+                )}时次 ${currentTimeInterval}H预报 ${contentText} ${methodText}${
+                    unitItem.type.includes("RAIN") && unitItem.noUnit === currentMethodValue
+                        ? ""
+                        : `（单位：${unitItem.unit}）`
+                }`,
                 veriType: veriType,
                 analyseType: analyseType
             };
             const res = await apis.getRegionVeriResult(data);
-            console.log(res);
+            // console.log(res);
             setExportTableData(data);
             setBasicData({
                 ...basicData,
@@ -275,7 +295,7 @@ export default function AreaVerificationModal({ open, onClose }: props) {
             };
         });
         const obsName = form.getFieldValue("obsName") as string[];
-        console.log("obsName====>>>>>>>>>>>>>>", obsName);
+        // console.log("obsName====>>>>>>>>>>>>>>", obsName);
         const newObsName = obsName.filter((item) => list.some((element) => element.value === item));
         form.setFieldValue("obsName", newObsName);
         setObsList(list);
@@ -291,7 +311,7 @@ export default function AreaVerificationModal({ open, onClose }: props) {
             };
         });
         const models = form.getFieldValue("models") as string[];
-        console.log("models====>>>>>>>>>>>>>>", models);
+        // console.log("models====>>>>>>>>>>>>>>", models);
         const newModels = models.filter((item) => list.some((element) => element.value === item));
         form.setFieldValue("models", newModels);
         setModelList(list);
@@ -308,7 +328,7 @@ export default function AreaVerificationModal({ open, onClose }: props) {
         ) as aoiItem;
         setVeriMethodList(currentContent.moc.contents);
         const currentMethod = currentContent.moc.contents.find((element) => element.value === currentMethodValue);
-        console.log("currentMethod===>>>", currentMethod);
+        // console.log("currentMethod===>>>", currentMethod);
         if (!currentMethod) {
             const firstMethod = currentContent.moc.contents[0];
             setCurrentMethodValue(firstMethod.value);
@@ -337,7 +357,7 @@ export default function AreaVerificationModal({ open, onClose }: props) {
     };
     /**获取时效间隔 */
     const getForcastHour = (content: contentItem) => {
-        console.log("处理时效间隔");
+        // console.log("处理时效间隔");
         const list = content.forcastHour.split(",").map((item) => {
             return {
                 label: item,
@@ -398,13 +418,24 @@ export default function AreaVerificationModal({ open, onClose }: props) {
         const has = list.some((item) => item.value === currentTimeInterval);
         if (!has) {
             setCurrentTimeInterval(list[0].value);
+            // 重置时效间隔列表后应重置为[0, 8]
+            setPosition([0, 8]);
+        } else {
+            // 如果有代表不会改变当前时效间隔，但可能会调整显示的时效间隔列表位置
+            const index = list.findIndex((item) => item.value === currentTimeInterval);
+            console.log("index=====", index);
+            if (index < 8) {
+                setPosition([0, 8]);
+            } else if (index > list.length - 8) {
+                setPosition([index - 7, index + 1]);
+            }
         }
     };
     /**根据选择模式（产品）查询区域 */
     const getRegionListByModels = async (models: string[]) => {
         try {
             const res = await apis.getRegionListByModels({ models: models.join(",") });
-            console.log("区域列表===>>>>>", res);
+            // console.log("区域列表===>>>>>", res);
             const list = res.fixedRegionInfo.map((item) => {
                 return {
                     label: item.regionName,
@@ -431,14 +462,15 @@ export default function AreaVerificationModal({ open, onClose }: props) {
         // showCustomArea();
     };
     const handleChangeVeriType = (e: RadioChangeEvent) => {
-        console.log("radio checked", e.target.value);
+        // console.log("radio checked", e.target.value);
         setAreaVeriType(e.target.value);
     };
     const handleChangePosition = (step: number) => {
         const index = timeIntervalList.slice(...position).findIndex((item) => item.value === currentTimeInterval);
         if (step === 1) {
             console.log(index);
-            if (index > -1 && index < 7) {
+            if (index > -1 && index < 7 && index < timeIntervalList.length - 1) {
+                console.log(index, timeIntervalList);
                 setCurrentTimeInterval(timeIntervalList.slice(...position)[index + 1].value);
             } else if (position[1] === timeIntervalList.length) {
                 return;
@@ -463,6 +495,8 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                 const newPosition = [timeIntervalList.length - 8, timeIntervalList.length];
                 setPosition(newPosition);
                 setCurrentTimeInterval(timeIntervalList.slice(...newPosition)[index].value);
+            } else if (timeIntervalList.length <= 8) {
+                return;
             } else if (index > -1 && index <= 7) {
                 const newPosition = [position[0] + 8, position[1] + 8];
                 setPosition(newPosition);
@@ -473,6 +507,8 @@ export default function AreaVerificationModal({ open, onClose }: props) {
                 const newPosition = [0, 8];
                 setPosition(newPosition);
                 setCurrentTimeInterval(timeIntervalList.slice(...newPosition)[index].value);
+            } else if (timeIntervalList.length <= 8) {
+                return;
             } else if (index > -1 && index <= 7) {
                 const newPosition = [position[0] - 8, position[1] - 8];
                 setPosition(newPosition);
@@ -526,6 +562,7 @@ export default function AreaVerificationModal({ open, onClose }: props) {
             width={1280}
             title={<ModalHeader title="区域检验" onClose={() => onClose()} />}
             closeIcon={false}
+            forceRender
             centered
             open={open}
             footer={null}

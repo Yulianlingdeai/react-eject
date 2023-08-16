@@ -65,12 +65,12 @@ export default function EchartComponent({ echartsData, basicData }: props) {
                                               key: `${model}-${item.rainText}-${index}`,
                                               value: current
                                                   ? handleAbnormalData(current[`value${item.rainLevel}`])
-                                                  : NaN
+                                                  : "NaN"
                                           };
                                       }
                                       return {
                                           key: `${model}-${item.rainText}-${index}`,
-                                          value: NaN
+                                          value: "NaN"
                                       };
                                   })
                               };
@@ -85,12 +85,12 @@ export default function EchartComponent({ echartsData, basicData }: props) {
                                           );
                                           return {
                                               key: `${model}-${index}`,
-                                              value: current ? handleAbnormalData(current.value) : NaN
+                                              value: current ? handleAbnormalData(current.value) : "NaN"
                                           };
                                       }
                                       return {
                                           key: `${model}-${index}`,
-                                          value: NaN
+                                          value: "NaN"
                                       };
                                   })
                               };

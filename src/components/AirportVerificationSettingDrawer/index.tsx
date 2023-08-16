@@ -1,4 +1,4 @@
-import React, { useState, ReactNode } from "react";
+import React, { useState, ReactNode, useEffect } from "react";
 import { Drawer, Checkbox } from "antd";
 // import type { CheckboxChangeEvent } from "antd/es/checkbox";
 import type { CheckboxValueType } from "antd/es/checkbox/Group";
@@ -12,6 +12,7 @@ import icon_rain from "../../assets/image/icon_rain.png";
 import icon_visibility from "../../assets/image/icon_visibility.png";
 import icon_low_cloud_cover from "../../assets/image/icon_low_cloud_cover.png";
 import icon_low_clouds_high from "../../assets/image/icon_low_clouds_high.png";
+import apis from "../../apis";
 
 type SettingItemProps = { children: ReactNode; title: string };
 const SettingItem = function ({ children, title }: SettingItemProps) {
@@ -39,6 +40,17 @@ export default function AirportVerificationSettingDrawer({ open, onClose }: prop
     const [method, setMethod] = useState(0);
     const [modelCheckedList, setModelCheckList] = useState<CheckboxValueType[]>(defaultCheckedList);
     const [startTimeCheckedList, setStartTimeCheckList] = useState<CheckboxValueType[]>(startTimedefaultCheckedList);
+    useEffect(() => {
+        const fetchConfig = async () => {
+            try {
+                const res = await apis.getAirportVerificationConfig();
+                console.log("机场检验设置", res);
+            } catch (e) {
+                console.log(e);
+            }
+        };
+        fetchConfig();
+    }, []);
     const handleCloseDrawer = () => {
         onClose(false);
     };

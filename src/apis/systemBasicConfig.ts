@@ -1,7 +1,11 @@
+import axios from "axios";
 import request from "../utils/request";
 import type { configKeys, aoiItem, regionItem, modelListItem, obsListItem } from "../typings";
 type configParams = {
     REGION: {
+        [key in configKeys]: aoiItem;
+    } & { des?: string };
+    STATION: {
         [key in configKeys]: aoiItem;
     } & { des?: string };
 };
@@ -10,6 +14,13 @@ type regionList = {
     fixedRegionInfo: regionItem[];
 };
 export default {
+    /**
+     * 获取机场检验设置
+     * @returns
+     */
+    async getAirportVerificationConfig() {
+        return await axios.get("/airportConfig.json");
+    },
     /**
      * 获取对应功能模块的检验参数
      * @param params
