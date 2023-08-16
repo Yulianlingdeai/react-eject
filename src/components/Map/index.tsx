@@ -4,11 +4,11 @@ import { Map, View } from "ol";
 import { Tile as TileLayer } from "ol/layer";
 import { fromLonLat } from "ol/proj";
 import { XYZ } from "ol/source";
-import VectorLayer from "ol/layer/Vector";
-import VectorSource from "ol/source/Vector";
-import Point from "ol/geom/Point";
-import Feature from "ol/Feature";
-import { Icon } from "ol/style";
+// import VectorLayer from "ol/layer/Vector";
+// import VectorSource from "ol/source/Vector";
+// import Point from "ol/geom/Point";
+// import Feature from "ol/Feature";
+// import { Icon } from "ol/style";
 import type { stationItem } from "../../typings";
 
 type props = { stationList: stationItem[] };
@@ -45,24 +45,24 @@ export default function MapComponent({ stationList }: props) {
     useEffect(() => {
         if (stationList.length) {
             if (!map) return;
-            console.log("添加站点", stationList);
-            const clickedCoord = event.coordinate;
+            // console.log("添加站点", stationList);
+            // const clickedCoord = event.coordinate;
 
-            const iconFeature = new Feature({
-                geometry: new Point(clickedCoord)
-            });
+            // const iconFeature = new Feature({
+            //     geometry: new Point(clickedCoord)
+            // });
 
-            const iconLayer = new VectorLayer({
-                source: new VectorSource({
-                    features: [iconFeature]
-                }),
-                style: new Icon({
-                    src: "path/to/your/icon.png", // 用你自己的图标路径
-                    scale: 0.5
-                })
-            });
+            // const iconLayer = new VectorLayer({
+            //     source: new VectorSource({
+            //         features: [iconFeature]
+            //     }),
+            //     style: new Icon({
+            //         src: "path/to/your/icon.png", // 用你自己的图标路径
+            //         scale: 0.5
+            //     })
+            // });
 
-            map.addLayer(iconLayer);
+            // map.addLayer(iconLayer);
         }
     }, [stationList, map]);
 
